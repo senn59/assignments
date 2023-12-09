@@ -1,13 +1,7 @@
 namespace friture;
 
-public class SnackResult
+public class SnackResult(bool ok, string? message = null)
 {
-   public bool Ok {get; private set; }
-   public string? Message { get; private set; }
-
-   public SnackResult( bool ok, string? message = null)
-   {
-      this.Ok = ok;
-      this.Message = message;
-   }
+   public bool Ok {get; private set; } = ok;
+   public string? Message { get; private set; } = message;
 }

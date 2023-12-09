@@ -1,15 +1,10 @@
 namespace friture;
 
-public class SnackBar
+public class SnackBar(List<Snack> list)
 {
-    private List<Snack> snackList;
     public decimal TotalRevenue;
-    public IReadOnlyList<Snack> SnackList => snackList.AsReadOnly();
-    
-    public SnackBar(List<Snack> snackList)
-    {
-        this.snackList = snackList;
-    }
+    public IReadOnlyList<Snack> SnackList => list.AsReadOnly();
+
     public decimal ProcessOrder(List<(Snack, int)> order)
     {
         decimal amountDue = 0;
@@ -17,6 +12,8 @@ public class SnackBar
         {
             amountDue += snack.Order(amount);
         }
+        
+        TotalRevenue += amountDue;
         return amountDue;
     }
 }
