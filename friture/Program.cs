@@ -27,14 +27,8 @@ while (true) {
 
             foreach (var snack in snackBar.SnackList)
             {
-                string? amount;
-                int parsedAmount;
-                do
-                {
-                    Console.WriteLine($"How many of {snack} would you like to order? ({snack.AmountInStock} in stock)");
-                    amount = Console.ReadLine();
-                } while (!int.TryParse(amount, out parsedAmount) || !snack.CanOrder(parsedAmount).Ok);
-                clientOrder.Add((snack, parsedAmount));
+                int amount = PromptAmount(snack);
+                clientOrder.Add((snack, amount));
             }
             //var priceToPay = snackBar.ProcessOrder(clientOrder);
             //Console.WriteLine($"Your total is: ${priceToPay}");
@@ -55,4 +49,23 @@ while (true) {
     }
     Console.WriteLine("(Press enter to quit.)");
     Console.ReadLine();
+}
+
+int PromptAmount(Snack snack)
+{
+    Console.WriteLine($"How many of {snack} would you like to order? ({snack.AmountInStock} in stock)");
+    var amount = Console.ReadLine();
+    if (!int.TryParse(amount, out int parsedAmount))
+    {
+        PromptAmount(snack);
+    }
+
+    var result = snack.CanOrder(parsedAmount);
+    if (!result.Ok)
+    {
+        Console.WriteLine(result.Message);
+        PromptAmount(snack);
+    }
+
+    return parsedAmount;
 }
