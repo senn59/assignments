@@ -1,16 +1,10 @@
 namespace friture;
 
-public class Snack
+public class Snack(string name, decimal price, int amountInStock)
 {
-    public string Name { get; private set; }
-    private decimal Price { get; set; } //property vs class field when private?
-    public int AmountInStock { get; private set; }
-    public Snack(string name, decimal price, int amountInStock)
-    {
-        this.Name = name;
-        this.Price = price;
-        this.AmountInStock = amountInStock;
-    }
+    public string Name { get; private set; } = name;
+    private decimal Price { get; set; } = price; //property vs class field when private?
+    public int AmountInStock { get; private set; } = amountInStock;
 
     public SnackResult CanOrder(int amount)
     {
@@ -27,6 +21,3 @@ public class Snack
         return this.Price * amount;
     }
 }
-/*
- how to see u need canorder for order?
-*/
