@@ -54,7 +54,7 @@ while (true) {
 
 int PromptOrderAmount(Snack snack)
 {
-    Console.WriteLine($"How many of {snack} would you like to order? ({snack.AmountInStock} in stock)");
+    Console.WriteLine($"How many of {snack.Name} would you like to order? ({snack.AmountInStock} in stock)");
     var amount = Console.ReadLine();
     if (!int.TryParse(amount, out var parsedAmount))
     {
