@@ -4,13 +4,13 @@ public class Option
 {
     private bool PasswordProtected { get; set; }
     private const string Password = "123";
-    private readonly string _name;
+    private readonly string _name = string.Empty;
     public string Name
     {
         get => _name;
         private init => _name = PasswordProtected ? value + " (requires password)" : value;
     }
-    private readonly Action _callback;
+    private readonly Action _callback = () => { };
     public Action Callback
     {
         get => _callback;
