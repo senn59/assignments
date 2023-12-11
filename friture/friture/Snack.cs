@@ -10,7 +10,7 @@ public class Snack(string name, decimal price, int amountInStock)
     {
         if (AmountInStock < amount)
         {
-            return new SnackResult(false, $"not enough \"{Name}\" in stock");
+            return new SnackResult(false, $"not enough \"{Name}\" in stock ({AmountInStock})");
         }
         return new SnackResult(ok: true);
     }
