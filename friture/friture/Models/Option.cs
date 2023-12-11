@@ -1,4 +1,4 @@
-namespace friture;
+namespace friture.Models;
 
 public class Option
 {

@@ -1,4 +1,4 @@
-﻿using friture;
+﻿using friture.Models;
 
 var snackBar = new SnackBar([
     new Snack("Frikandel", 1.50m, 20),
