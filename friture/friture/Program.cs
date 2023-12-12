@@ -14,9 +14,20 @@ var options = new List<Option>
 
         foreach (var snack in snackBar.SnackList)
         {
+            if (snack.AmountInStock <= 0)
+            {
+                continue;
+            }
             var amount = PromptOrderAmount(snack);
             clientOrder.Add((snack, amount));
         }
+
+        if (clientOrder.Count <= 0)
+        {
+            Console.WriteLine("We are out of stock!");
+            return;
+        }
+        
         var amountDue = snackBar.ProcessOrder(clientOrder);
         Console.WriteLine($"Your total is: ${amountDue}");
     }),
@@ -65,6 +76,12 @@ int PromptOrderAmount(Snack snack)
     if (!result.Ok)
     {
         Console.WriteLine(result.Message);
+        return PromptOrderAmount(snack);
+    }
+
+    if (parsedAmount < 0)
+    {
+        Console.WriteLine("Invalid number!");
         return PromptOrderAmount(snack);
     }
     
