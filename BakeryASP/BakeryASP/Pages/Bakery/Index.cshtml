@@ -1,22 +1,26 @@
 @page
 @model BakeryASP.Pages.Bakery.Index
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
 
 @{
-    Layout = null;
+    Layout = "_Layout";
 }
 
 <!DOCTYPE html>
 
-<html>
-<head>
+<html lang="en">
+<head class="h-100">
     <title></title>
 </head>
-<body>
-<div>
-    <h1>@Model.Title</h1>
-    <form method="POST">
-        <input name="textInput" placeholder="Your test..." />
-        <input type="submit" />
+<body class="h-100 d-flex flex-column m-0">
+<div class="container flex-grow-1 w-25">
+    @if (!string.IsNullOrEmpty(Model.Title))
+    {
+        <h1>@Model.Title</h1>
+    }
+    <form method="post" class="d-flex flex-column mt-4">
+        <input class="mb-3" asp-for="Title" placeholder="Your title..."/>
+        <input type="submit" class="btn btn-primary"/>
     </form>
 </div>
 </body>
