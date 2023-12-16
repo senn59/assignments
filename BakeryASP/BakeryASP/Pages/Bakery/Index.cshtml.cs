@@ -8,15 +8,13 @@ public class Index : PageModel
     [BindProperty]
     public string Title { get; set; } = string.Empty;
     
-    public void OnGet()
+    public void OnGet(string title)
     {
-        Console.WriteLine("on get");
+        Title = title;
     }
 
-    public IActionResult OnPost(string title)
+    public IActionResult OnPost(string? title)
     {
-        Console.WriteLine(title);
-        Console.WriteLine(Title);
-        return Page();
+        return RedirectToPage("/Bakery/Index", new {title = Title });
     }
 }
