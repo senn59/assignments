@@ -1,3 +1,6 @@
+using System.Runtime.CompilerServices;
+using Bakery.Core.Files;
+
 namespace Bakery.Core;
 
 public class Bakery
@@ -5,7 +8,8 @@ public class Bakery
     private const int VatPercentage = 9;
     public string Name { get; private set; }
     private double _revenue = 0;
-    private List<Sandwich> _sandwiches = new List<Sandwich>();
+    private List<Sandwich> _sandwiches;
+    private SandwichFiles _sandwichFiles;
     public IReadOnlyList<Ingredient> Ingredients = new List<Ingredient>([
         new Ingredient("lettuce", 0.2),
         new Ingredient("tomato", 0.3),
@@ -15,6 +19,9 @@ public class Bakery
     public Bakery(string name)
     {
         this.Name = name;
+        _sandwichFiles = new SandwichFiles(this, "/home/senna/dl/sandwiches.csv");
+        _sandwiches = _sandwichFiles.Load();
+        _sandwichFiles.Save(_sandwiches);
     }
 
     public void AddSandwich(Sandwich sandwich)

@@ -1,3 +1,4 @@
+using Bakery.Core;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
@@ -7,6 +8,8 @@ public class Index : PageModel
 {
     [BindProperty]
     public string Title { get; set; } = string.Empty;
+
+    private global::Bakery.Core.Bakery _bakery = new global::Bakery.Core.Bakery("test");
     
     public void OnGet(string title)
     {
