@@ -65,4 +65,8 @@
       <Folder Include="wwwroot\lib\" />
     </ItemGroup>
 
+    <ItemGroup>
+      <ProjectReference Include="..\Bakery.Core\Bakery.Core.csproj" />
+    </ItemGroup>
+
 </Project>
