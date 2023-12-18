@@ -21,12 +21,12 @@ public class Bakery
         this.Name = name;
         _sandwichFiles = new SandwichFiles(this, "/home/senna/dl/sandwiches.csv");
         _sandwiches = _sandwichFiles.Load();
-        _sandwichFiles.Save(_sandwiches);
     }
 
     public void AddSandwich(Sandwich sandwich)
     {
         _sandwiches.Add(sandwich);
+        _sandwichFiles.Save(_sandwiches);
     }
 
     public IReadOnlyList<Sandwich> GetAvailableSandwiches()
