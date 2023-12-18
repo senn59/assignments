@@ -4,25 +4,27 @@
 @addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
 
 @{
+    ViewData["Title"] = "Bakery";
     Layout = "_Layout";
 }
 
-<!DOCTYPE html>
+<div class="container row">
+    <h1>@ViewData["Title"]: @Model.BakeryName</h1>
+    <div class="container col">
+        <a asp-page="/Bakery/AddSandwich">
+            <button class="btn btn-primary">Add sandwich</button>
+        </a>
+    </div>
+    <div class="col">
+        @foreach (var sandwich in Model.Sandwiches)
+        {
+            <div><strong>@sandwich.Name</strong></div>
+            @foreach (var ingredient in @sandwich.Ingredients)
+            {
+                <div class="lead">@ingredient.Name,</div>
+            }
 
-<html lang="en">
-<head class="h-100">
-    <title></title>
-</head>
-<body class="h-100 d-flex flex-column m-0">
-<div class="container flex-grow-1 w-25">
-    @if (!string.IsNullOrEmpty(Model.Title))
-    {
-        <h1>@Model.Title</h1>
-    }
-    <form method="post" class="d-flex flex-column mt-4">
-        <input class="mb-3" asp-for="Title" placeholder="Your title..."/>
-        <input type="submit" class="btn btn-primary"/>
-    </form>
+            <br/>
+        }
+    </div>
 </div>
-</body>
-</html>

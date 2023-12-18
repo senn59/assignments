@@ -1,4 +1,5 @@
 using Bakery.Core;
+using BakeryASP.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
@@ -6,18 +7,19 @@ namespace BakeryASP.Pages.Bakery;
 
 public class Index : PageModel
 {
-    [BindProperty]
-    public string Title { get; set; } = string.Empty;
-
-    private global::Bakery.Core.Bakery _bakery = new global::Bakery.Core.Bakery("test");
-    
-    public void OnGet(string title)
+    public string Title { get; set; } = "Bakery";
+    public string BakeryName { get; private set; }
+    public IReadOnlyList<Sandwich> Sandwiches { get; private set; }
+    private readonly BakeryService _bakeryService;
+    public Index(BakeryService bakeryService)
     {
-        Title = title;
+        _bakeryService = bakeryService;
+        Sandwiches = _bakeryService.Bakery.GetAvailableSandwiches();
+        BakeryName = _bakeryService.Bakery.Name;
     }
-
-    public IActionResult OnPost(string? title)
+    
+    public void OnGet()
     {
-        return RedirectToPage("/Bakery/Index", new {title = Title });
+        
     }
 }
