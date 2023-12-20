@@ -1,24 +1,42 @@
 @page
 @model BakeryASP.Pages.Bakery.AddSandwich
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
 
 @{
+    ViewData["title"] = "Add Sandwich";
     Layout = "_Layout";
 }
-
-<!DOCTYPE html>
 
 <div class="container w-50">
     <h1>Add a sandwich to the system.</h1>
     <form method="post">
         <div class="mb-3">
             <placeholder asp-for="Name" class="form-check-label">Name</placeholder>
-            <input placeholder="name" type="text" asp-for="Name" class="form-control"/>
+            <input placeholder="name" asp-for="Name" class="form-control" required="required"/>
+            <span asp-validation-for="Name"></span>
         </div>
         <div class="mb-3">
-            <placeholder asp-for="Bread" class="form-check-label">Bread Type</placeholder>
-            <select class="form-select" asp-for="Bread">
-                <option>test</option>
-            </select>
+            <placeholder asp-for="Price" class="form-check-label">Price</placeholder>
+            <input asp-for="Price" class="form-control" type="number" step="0.05"/>
+            <span asp-validation-for="Price"></span>
+        </div>
+        <div class="mb-3">
+            <placeholder asp-for="Bread" class="form-check-label" required>Bread</placeholder>
+            <select class="form-select" asp-for="Bread" asp-items="Model.AvailableBreads"></select>
+            <span asp-validation-for="Bread"></span>
+        </div>
+        <div class="mb-3 row">
+            @foreach (var ingredient in Model.Ingredients)
+            {
+                <div>
+                    <input type="checkbox" id="@ingredient.Name" name="IngredientList" class="form-check-input" value="@ingredient.Name" />
+                    <label for="@ingredient.Name" class="form-check-label">@ingredient.Name</label>
+                </div>
+            }
+            <span asp-validation-for="Ingredients"></span>
+        </div>
+        <div>
+            <input type="submit" value="Add" class="btn btn-primary" />
         </div>
     </form>
 </div>

@@ -43,4 +43,14 @@ public class Sandwich
         }
         return price;
     }
+
+    public override string ToString()
+    {
+        var str = $"{Name} | {this.BasePrice} {this.GetPrice()} | ";
+        foreach (var i in _ingredients)
+        {
+            str += $"{i.Name} ";
+        }
+        return str;
+    }
 }
