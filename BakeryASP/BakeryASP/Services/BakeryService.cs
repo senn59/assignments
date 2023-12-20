@@ -1,6 +1,7 @@
 namespace BakeryASP.Services;
+using Bakery.Core;
 
 public class BakeryService
 {
-    public Bakery.Core.Bakery Bakery { get; private set; } = new Bakery.Core.Bakery("test");
+    public Bakery Bakery { get; private set; } = new Bakery("test");
 }

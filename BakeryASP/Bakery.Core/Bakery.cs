@@ -1,4 +1,3 @@
-using System.Runtime.CompilerServices;
 using Bakery.Core.Files;
 
 namespace Bakery.Core;
@@ -14,6 +13,10 @@ public class Bakery
         new Ingredient("lettuce", 0.2),
         new Ingredient("tomato", 0.3),
         new Ingredient("ham", 0.25),
+        new Ingredient("turkey", 0.15),
+        new Ingredient("cheese", 0.2),
+        new Ingredient("bacon", 0.5),
+        new Ingredient("jam", 0.1)
     ]).AsReadOnly();
 
     public Bakery(string name)
