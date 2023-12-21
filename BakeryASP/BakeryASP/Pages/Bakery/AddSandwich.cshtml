@@ -12,7 +12,7 @@
     <form method="post">
         <div class="mb-3">
             <placeholder asp-for="Name" class="form-check-label">Name</placeholder>
-            <input placeholder="name" asp-for="Name" class="form-control" required="required"/>
+            <input placeholder="name" asp-for="Name" class="form-control"/>
             <span asp-validation-for="Name"></span>
         </div>
         <div class="mb-3">
@@ -36,7 +36,8 @@
             <span asp-validation-for="Ingredients"></span>
         </div>
         <div>
-            <input type="submit" value="Add" class="btn btn-primary" />
+            <input type="submit" value="Add" class="btn btn-primary"/>
+            <a asp-page="/Bakery/Index" class="link-danger">Cancel</a>
         </div>
     </form>
 </div>

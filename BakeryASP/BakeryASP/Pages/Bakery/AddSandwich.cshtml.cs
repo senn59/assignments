@@ -51,30 +51,37 @@ public class AddSandwich : PageModel
         }
 
         var newSandwich = new Sandwich(Name, breadType, parsedPrice);
-        List<string> ingredientErrors = new List<string>();
-        foreach (var i in IngredientList)
+        var ingredientErrors = new List<string>();
+        if (IngredientList.Count <= 0)
         {
-            var ingredient = _bakeryService.Bakery.Ingredients.FirstOrDefault(x => x.Name == i);
-            if (ingredient == null)
+            ingredientErrors.Add("Sandwich has to contain atleast 1 ingredient");
+        }
+        else
+        {
+            foreach (var i in IngredientList)
             {
-                continue;
-            }
+                var ingredient = _bakeryService.Bakery.Ingredients.FirstOrDefault(x => x.Name == i);
+                if (ingredient == null)
+                {
+                    ingredientErrors.Add($"\"{i}\" is an invalid ingredient.");
+                    continue;
+                }
 
-            var result = newSandwich.AddIngredient(ingredient);
-            if (result != null)
-            {
+                var result = newSandwich.AddIngredient(ingredient);
+                if (result == null) continue;
                 ingredientErrors.Add(result);
+                break;
             }
         }
 
         if (ingredientErrors.Count > 0)
         {
-            ModelState.AddModelError(nameof(Ingredients), string.Join(", ", ingredientErrors));
+            ModelState.AddModelError(nameof(Ingredients), string.Join(", \n", ingredientErrors));
         }
 
         if (!ModelState.IsValid)
         {
-            _logger.LogWarning("Sandwich was not added correctly, because user is stupid");
+            _logger.LogWarning("Sandwich was not added correctly");
             return Page();
         }
 
