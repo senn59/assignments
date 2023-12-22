@@ -1,29 +1,44 @@
 @page
-@using Microsoft.AspNetCore.Mvc.TagHelpers
 @model BakeryASP.Pages.Bakery.Index
-@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
 
 @{
     ViewData["Title"] = "Bakery";
-    Layout = "_Layout";
 }
 
 <div class="container row">
     <div class="mb-5">
         <h1>@ViewData["Title"]: @Model.BakeryName</h1>
-        <a asp-page="/Bakery/AddSandwich">
+        <x:a asp-page="/Bakery/AddSandwich">
             <button class="btn btn-primary">Add sandwich</button>
-        </a>
+        </x:a>
     </div>
-    <div>
-        @foreach (var sandwich in Model.Sandwiches)
+    
+    <div class="w-auto">
+        <h1>Menu: </h1>
+        @foreach (var bread in Model.Breads)
         {
-            <div><strong>@sandwich.Name</strong></div>
-            @foreach (var ingredient in @sandwich.Ingredients)
+            var sandwiches = Model.Sandwiches.Where(s => s.Bread.ToString() == bread).ToList();
+            if (!sandwiches.Any())
             {
-                <div class="lead">@ingredient.Name,</div>
+                continue;
             }
-            <br/>
+
+            <p class="h5">
+                @bread
+            </p>
+            <div>
+                @foreach (var s in sandwiches)
+                {
+                    <div class="list-group-item-action sandwich">
+                        <div class="lead">@s.Name</div>
+                        @foreach (var i in @s.Ingredients)
+                        {
+                            <small class="text-muted">@i.Name,</small>
+                        }
+                    </div>
+                    <br/>
+                }
+            </div>
         }
     </div>
 </div>

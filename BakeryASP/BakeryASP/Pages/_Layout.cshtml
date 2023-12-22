@@ -1,15 +1,18 @@
 <!DOCTYPE html>
 
-<html>
+<html lang="EN">
 <head>
     <title>@ViewData["Title"]</title>
-    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css"/>
+    <x:link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css"/>
+    <x:link rel="stylesheet" href="~/css/site.css"/>
 </head>
 <body>
 <div>
     <main>
-        @RenderBody();
+        @RenderBody()
     </main>
 </div>
+<x:script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></x:script>
+<x:script src="~/js/site.js"></x:script>
 </body>
 </html>

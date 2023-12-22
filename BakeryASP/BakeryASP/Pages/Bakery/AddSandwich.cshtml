@@ -1,6 +1,5 @@
 @page
 @model BakeryASP.Pages.Bakery.AddSandwich
-@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
 
 @{
     ViewData["title"] = "Add Sandwich";
@@ -11,19 +10,19 @@
     <h1>Add a sandwich to the system.</h1>
     <form method="post">
         <div class="mb-3">
-            <placeholder asp-for="Name" class="form-check-label">Name</placeholder>
-            <input placeholder="name" asp-for="Name" class="form-control"/>
-            <span asp-validation-for="Name"></span>
+            <x:placeholder asp-for="Name" class="form-check-label">Name</x:placeholder>
+            <x:input placeholder="name" asp-for="Name" class="form-control"/>
+            <x:span asp-validation-for="Name"></x:span>
         </div>
         <div class="mb-3">
-            <placeholder asp-for="Price" class="form-check-label">Price</placeholder>
-            <input asp-for="Price" class="form-control" type="number" step="0.05"/>
-            <span asp-validation-for="Price"></span>
+            <x:placeholder asp-for="Price" class="form-check-label">Price</X:placeholder>
+            <x:input asp-for="Price" class="form-control" type="number" step="0.05"/>
+            <x:span asp-validation-for="Price"></x:span>
         </div>
         <div class="mb-3">
-            <placeholder asp-for="Bread" class="form-check-label" required>Bread</placeholder>
-            <select class="form-select" asp-for="Bread" asp-items="Model.AvailableBreads"></select>
-            <span asp-validation-for="Bread"></span>
+            <x:placeholder asp-for="Bread" class="form-check-label">Bread</x:placeholder>
+            <x:select class="form-select" asp-for="Bread" asp-items="Model.AvailableBreads"></x:select>
+            <x:span asp-validation-for="Bread"></x:span>
         </div>
         <div class="mb-3 row">
             @foreach (var ingredient in Model.Ingredients)
@@ -33,11 +32,11 @@
                     <label for="@ingredient.Name" class="form-check-label">@ingredient.Name</label>
                 </div>
             }
-            <span asp-validation-for="Ingredients"></span>
+            <x:span asp-validation-for="Ingredients"></x:span>
         </div>
         <div>
             <input type="submit" value="Add" class="btn btn-primary"/>
-            <a asp-page="/Bakery/Index" class="link-danger">Cancel</a>
+            <x:a asp-page="/Bakery/Index" class="link-danger">Cancel</x:a>
         </div>
     </form>
 </div>
