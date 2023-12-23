@@ -29,7 +29,8 @@
             <div>
                 @foreach (var s in sandwiches)
                 {
-                    <div class="list-group-item-action sandwich">
+                    <div class="list-group-item-action sandwich" onclick="addToOrder('@s.Name')">
+                        <input type="hidden" value="0" name="@s.Name" autocomplete="off"/>
                         <div class="lead">@s.Name</div>
                         @foreach (var i in @s.Ingredients)
                         {
@@ -40,5 +41,11 @@
                 }
             </div>
         }
+    </div>
+    <div>
+        <h3>Order</h3>
+        <div id="order">
+            
+        </div>
     </div>
 </div>
