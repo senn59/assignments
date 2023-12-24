@@ -3,25 +3,14 @@
 
 // Write your JavaScript code.
 
-let orderEl;
+let cartEl;
 document.onreadystatechange = () => {
-    orderEl = document.getElementById("order");
+    cartEl = document.getElementById("cart");
 }
 const addToOrder = (sandwich) => {
     console.log(sandwich)
-    const sandwichOrderCount = document.querySelector(`input[name='${sandwich}']`)
-    sandwichOrderCount.value++;
-    const orderTxt = `${sandwich} x${sandwichOrderCount.value}`;
-    const orderItem = document.querySelector(`#order [id='${sandwich}']`)
-    console.log(orderItem)
-    if (orderItem != null) {
-        orderItem.innerText = orderTxt
-    } else {
-        const html = `
-            <div id="${sandwich}">
-                ${orderTxt}
-            </div>
-        `
-        orderEl.innerHTML += html;
-    }
+    const sandwichInput = document.querySelector(`input[name='${sandwich}']`);
+    sandwichInput.value++
+    const txtEl = sandwichInput.parentElement.querySelector("p");
+    txtEl.innerText = `${sandwich}  x${sandwichInput.value}`;
 }

@@ -30,7 +30,7 @@
                 @foreach (var s in sandwiches)
                 {
                     <div class="list-group-item-action sandwich" onclick="addToOrder('@s.Name')">
-                        <input type="hidden" value="0" name="@s.Name" autocomplete="off"/>
+                        @* <input type="hidden" value="0" name="@s.Name" autocomplete="off"/> *@
                         <div class="lead">@s.Name</div>
                         @foreach (var i in @s.Ingredients)
                         {
@@ -43,9 +43,19 @@
         }
     </div>
     <div>
-        <h3>Order</h3>
-        <div id="order">
-            
+        <h3>Cart</h3>
+        <div id="cart">
+            <form method="post">
+                @Html.AntiForgeryToken()
+                @foreach (var s in Model.Sandwiches)
+                {
+                    <div>
+                        <p></p>
+                        <x:input type="hidden" value="0" asp-for="@Model.Cart[@s.Name]" name="@s.Name" autocomplete="off"/>
+                    </div>
+                }
+                <input type="submit" value="Sell"/>
+            </form>
         </div>
     </div>
 </div>
