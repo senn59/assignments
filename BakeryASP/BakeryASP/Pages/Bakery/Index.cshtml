@@ -8,9 +8,9 @@
 <div class="container row">
     <div class="mb-5">
         <h1>@ViewData["Title"]: @Model.BakeryName</h1>
-        <x:a asp-page="/Bakery/AddSandwich">
+        <a asp-page="/Bakery/AddSandwich">
             <button class="btn btn-primary">Add sandwich</button>
-        </x:a>
+        </a>
     </div>
     
     <div class="w-auto">
@@ -36,6 +36,7 @@
                         {
                             <small class="text-muted">@i.Name,</small>
                         }
+                        <p>@s.GetPrice()</p>
                     </div>
                     <br/>
                 }
@@ -46,14 +47,14 @@
         <h3>Cart</h3>
         <div id="cart">
             <form method="post">
-                @Html.AntiForgeryToken()
                 @foreach (var s in Model.Sandwiches)
                 {
                     <div>
-                        <p></p>
-                        <x:input type="hidden" value="0" asp-for="@Model.Cart[@s.Name]" name="@s.Name" autocomplete="off"/>
+                        <p onclick="removeFromOrder('@s.Name')"></p>
+                        <input type="hidden" value="0" asp-for="@Model.Cart[@s.Name]" name="@s.Name" autocomplete="off"/>
                     </div>
                 }
+                <span asp-validation-for="@Model.Cart"></span>
                 <input type="submit" value="Sell"/>
             </form>
         </div>

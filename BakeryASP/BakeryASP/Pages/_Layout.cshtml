@@ -3,8 +3,11 @@
 <html lang="EN">
 <head>
     <title>@ViewData["Title"]</title>
-    <x:link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css"/>
-    <x:link rel="stylesheet" href="~/css/site.css"/>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css"/>
+    <link rel="stylesheet" href="~/css/site.css"/>
+
+    <script defer src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script defer src="~/js/site.js" asp-append-version="true"></script>
 </head>
 <body>
 <div>
@@ -12,7 +15,5 @@
         @RenderBody()
     </main>
 </div>
-<x:script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></x:script>
-<x:script src="~/js/site.js?v=3"></x:script>
 </body>
 </html>

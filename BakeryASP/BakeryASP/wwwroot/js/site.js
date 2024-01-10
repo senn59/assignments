@@ -3,14 +3,23 @@
 
 // Write your JavaScript code.
 
-let cartEl;
-document.onreadystatechange = () => {
-    cartEl = document.getElementById("cart");
-}
+let cartEl = document.getElementById("cart");
+
 const addToOrder = (sandwich) => {
-    console.log(sandwich)
     const sandwichInput = document.querySelector(`input[name='${sandwich}']`);
     sandwichInput.value++
     const txtEl = sandwichInput.parentElement.querySelector("p");
     txtEl.innerText = `${sandwich}  x${sandwichInput.value}`;
+}
+
+const removeFromOrder = (sandwich) => {
+    const sandwichInput = document.querySelector(`input[name='${sandwich}']`);
+    const txtEl = sandwichInput.parentElement.querySelector("p");
+    if (sandwichInput.value <= 1) {
+        sandwichInput.value = 0;
+        txtEl.innerText = "";
+    } else {
+        sandwichInput.value--;
+        txtEl.innerText = `${sandwich}  x${sandwichInput.value}`;
+    }
 }
