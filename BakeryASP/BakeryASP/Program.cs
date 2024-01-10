@@ -1,3 +1,4 @@
+using Bakery.Core.Services;
 using BakeryASP.Services;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -5,6 +6,8 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddRazorPages();
 builder.Services.AddSingleton<BakeryService>();
+builder.Services.AddSingleton<TimeProvider>(_ => TimeProvider.System);
+builder.Services.AddScoped<OrderService>();
 
 var app = builder.Build();
 // Configure the HTTP request pipeline.
