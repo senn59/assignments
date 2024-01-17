@@ -5,6 +5,7 @@ namespace Bakery.Core.Services;
 
 public class OrderService
 {
+
     public void Insert(OrderDto order)
     {
         string filePath = "order-data.json";
@@ -26,5 +27,10 @@ public class OrderService
         
         // converteer de DTOs naar echte order en order item classes
         // TotalPrice
+    }
+
+    public decimal GetRevenue()
+    {
+        return GetAll().Sum(o => o.Sandwiches.Sum(s => s.TotalPrice));
     }
 }

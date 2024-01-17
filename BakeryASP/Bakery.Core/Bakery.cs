@@ -8,19 +8,19 @@ public class Bakery
     private List<Sandwich> _sandwiches;
     private SandwichFiles _sandwichFiles;
     public IReadOnlyList<Ingredient> Ingredients = new List<Ingredient>([
-        new Ingredient("lettuce", 0.2),
-        new Ingredient("tomato", 0.3),
-        new Ingredient("ham", 0.25),
-        new Ingredient("turkey", 0.15),
-        new Ingredient("cheese", 0.2),
-        new Ingredient("bacon", 0.5),
-        new Ingredient("jam", 0.1)
+        new Ingredient("lettuce", 0.2m),
+        new Ingredient("tomato", 0.3m),
+        new Ingredient("ham", 0.25m),
+        new Ingredient("turkey", 0.15m),
+        new Ingredient("cheese", 0.2m),
+        new Ingredient("bacon", 0.5m),
+        new Ingredient("jam", 0.1m)
     ]).AsReadOnly();
 
     public Bakery(string name)
     {
         this.Name = name;
-        _sandwichFiles = new SandwichFiles(this, "/home/senna/dl/sandwiches.csv");
+        _sandwichFiles = new SandwichFiles(this, "sandwiches.csv");
         _sandwiches = _sandwichFiles.Load();
     }
 

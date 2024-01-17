@@ -3,13 +3,13 @@ namespace Bakery.Core;
 public class Sandwich
 {
     public string Name { get; private set; }
-    public double BasePrice { get; private set; }
+    public decimal BasePrice { get; private set; }
     public BreadType Bread { get; private set; }
     private List<Ingredient> _ingredients = new List<Ingredient>();
     public IReadOnlyList<Ingredient> Ingredients => _ingredients.AsReadOnly();
     private const int MaxIngredients = 5;
 
-    public Sandwich(string name, BreadType bread, double basePrice)
+    public Sandwich(string name, BreadType bread, decimal basePrice)
     {
         this.Name = name;
         this.Bread = bread;
@@ -34,7 +34,7 @@ public class Sandwich
         return $"{Name} ({Bread} with {ingredients})";
     }
 
-    public double GetPrice()
+    public decimal GetPrice()
     {
         var price = BasePrice;
         foreach (var ingredient in _ingredients)

@@ -1,6 +1,7 @@
 using Bakery.Core;
 using Bakery.Core.Dtos;
 using Bakery.Core.Services;
+using BakeryASP.Models;
 using BakeryASP.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
@@ -14,8 +15,10 @@ public class Index : PageModel
     public IReadOnlyList<Sandwich> Sandwiches { get; private set; }
     public List<string> Breads { get; set; } = Enum.GetNames<BreadType>().ToList();
 
-    [BindProperty] public Dictionary<string, int> Cart { get; set; } = new Dictionary<string, int>();
-    public double revenue { get; set; } = 0;
+    // [BindProperty] public Dictionary<string, int> Cart { get; set; } = new Dictionary<string, int>();
+    [BindProperty] public List<OrderItemView> Cart { get; set; }
+    public decimal Revenue { get; set; } = 0;
+    public decimal RevenueWithVat => Math.Round(((Revenue) * (100 + 21) / 100), 2);
 
     private readonly BakeryService _bakeryService;
     private readonly OrderService _orderService;
@@ -27,67 +30,48 @@ public class Index : PageModel
         _orderService = orderService;
         _timeProvider = timeProvider;
         this.Sandwiches = _bakeryService.Bakery.GetAvailableSandwiches();
-        foreach (var s in this.Sandwiches)
-        {
-            Cart.Add(s.Name, 0);
-        }
-
+        Cart = new List<OrderItemView>(new OrderItemView[Sandwiches.Count]);
         this.BakeryName = _bakeryService.Bakery.Name;
     }
 
     public void OnGet()
     {
-        var orders = _orderService.GetAll();
-        foreach (var order in orders)
-        {
-            foreach (var sandwich in order.Sandwiches)
-            {
-                this.revenue += sandwich.SandwichPrice * sandwich.Amount;
-            }
-        }
+        Revenue = _orderService.GetRevenue();
     }
 
     public IActionResult OnPost()
     {
+        Console.WriteLine(Cart.Count);
         var orders = new List<OrderItemDto>();
-        foreach (var item in Cart.Where(kvp => !kvp.Key.Contains("Request")))
+        foreach (var item in Cart)
         {
-            var sandwich = this.Sandwiches.FirstOrDefault(s => s.Name == item.Key);
+            var sandwich = Sandwiches.FirstOrDefault(s => s.Name == item.SandwichName);
             if (sandwich == null)
             {
-                ModelState.AddModelError(nameof(Cart), "Invalid sandwich in cart.");
+                ModelState.AddModelError(nameof(Cart), "Invalid sandwich in cart");
                 return Page();
             }
 
-            if (item.Value == 0)
+            if (item.Amount <= 0)
             {
-                continue;
+               continue; 
             }
-
-            orders.Add(new OrderItemDto
+            
+            orders.Add(new OrderItemDto()
             {
-                SandwichName = sandwich.Name,
-                SandwichPrice = sandwich.GetPrice(),
-                Amount = item.Value
+                SandwichName = item.SandwichName,
+                Amount = item.Amount,
+                SandwichPrice = sandwich.GetPrice()
             });
+
+        }
+        
+        if (orders.Count == 0)
+        {
+            ModelState.AddModelError(nameof(Cart), "No items in cart.");
+            return Page();
         }
 
-        // List<OrderItemDto> orders = Cart
-        //     .Where(kvp => !kvp.Key.Contains("Request"))
-        //     .Select(kvp =>
-        //     {
-        //         var sandwich = this.Sandwiches.FirstOrDefault(s => s.Name == kvp.Key) ??
-        //                        throw new InvalidOperationException("This should not happen. Hackerz?");
-        //
-        //         return new OrderItemDto
-        //         {
-        //             SandwichName = sandwich.Name,
-        //             SandwichPrice = sandwich.GetPrice(),
-        //             Amount = kvp.Value
-        //         };
-        //     }).ToList();
-
-        // _bakeryService.Bakery.Order(order);
         _orderService.Insert(new OrderDto
         {
             Sandwiches = orders,
