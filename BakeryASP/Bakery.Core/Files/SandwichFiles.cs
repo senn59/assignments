@@ -55,7 +55,7 @@ public class SandwichFiles
             return null;
         }
         
-        if (!double.TryParse(price, out var parsedPrice))
+        if (!decimal.TryParse(price, out var parsedPrice))
         {
             return null;
         }

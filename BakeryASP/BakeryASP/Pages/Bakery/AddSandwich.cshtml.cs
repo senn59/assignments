@@ -44,7 +44,7 @@ public class AddSandwich : PageModel
             ModelState.AddModelError(nameof(Bread), "Unknown bread type");
         }
 
-        if (!Double.TryParse(Price, out var parsedPrice))
+        if (!decimal.TryParse(Price, out var parsedPrice))
         {
             ModelState.AddModelError(nameof(Price), "Invalid price");
         }

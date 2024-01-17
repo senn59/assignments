@@ -1,5 +1,5 @@
 namespace friture.Models;
-
+    
 public class Option
 {
     private bool PasswordProtected { get; set; }

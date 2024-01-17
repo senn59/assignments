@@ -30,7 +30,6 @@
                 @foreach (var s in sandwiches)
                 {
                     <div class="list-group-item-action sandwich" onclick="addToOrder('@s.Name')">
-                        @* <input type="hidden" value="0" name="@s.Name" autocomplete="off"/> *@
                         <div class="lead">@s.Name</div>
                         @foreach (var i in @s.Ingredients)
                         {
@@ -47,19 +46,30 @@
         <h3>Cart</h3>
         <div id="cart">
             <form method="post">
-                @foreach (var s in Model.Sandwiches)
+                @for (var i = 0; i < Model.Sandwiches.Count(); i++)
                 {
                     <div>
-                        <p onclick="removeFromOrder('@s.Name')"></p>
-                        <input type="hidden" value="0" asp-for="@Model.Cart[@s.Name]" name="@s.Name" autocomplete="off"/>
+                        <p onclick="removeFromOrder('@Model.Sandwiches[i].Name')"></p>
+                        <input type="hidden" value="0" asp-for="@Model.Cart[i].Amount" id="@Model.Sandwiches[i].Name" />
+                        <input type="hidden" value="@Model.Sandwiches[i].Name" asp-for="@Model.Cart[i].SandwichName" />
                     </div>
                 }
+                
+                
+                @* @foreach (var s in Model.Sandwiches) *@
+                @* { *@
+                @*     <div> *@
+                @*         <p onclick="removeFromOrder('@s.Name')"></p> *@
+                @*         <input type="hidden" value="0" asp-for="@Model.Cart" name="@s.Name" autocomplete="off"/> *@
+                @*     </div> *@
+                @* } *@
                 <span asp-validation-for="@Model.Cart"></span>
                 <input type="submit" value="Sell"/>
             </form>
         </div>
     </div>
     <div>
-        <h1> @Model.revenue </h1>
+        <h1>Revenue </h1>
+        <p>@Model.Revenue (@Model.RevenueWithVat with VAT)</p>
     </div>
 </div>
