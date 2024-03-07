@@ -28,25 +28,34 @@ public class Train
     {
         foreach (var carni in Carnivores)
         {
+            Herbivores = UpdateList(Herbivores, _herbivoresToRemove);
             var wagon = new Wagon();
             wagon.TryFitAnimals([carni]);
             _carnivoresToRemove.Add(carni);
-            var availableHerbivores = Herbivores.Where(a => (int)a.Size > (int)carni.Size).ToList();
+            var availableHerbivores = Herbivores
+                .Where(a => (int)a.Size > (int)carni.Size)
+                .ToList();
             foreach (var herb in availableHerbivores)
             {
                 if (wagon.TotalSize() + (int)herb.Size <= wagon.MaxSize)
                 {
-                    wagon.TryFitAnimals([herb]);
+                    var res = wagon.TryFitAnimals([herb]);
+                    if (res != null)
+                    {
+                        Console.WriteLine(res);
+                    }
                     _herbivoresToRemove.Add(herb);
                 }
             }
             Wagons.Add(wagon);
         }
-
+        
         Herbivores = UpdateList(Herbivores, _herbivoresToRemove);
+        
         var wagonBuffer = new Wagon();
         foreach (var herb in Herbivores)
         {
+            
             if (wagonBuffer.TotalSize() + (int)herb.Size <= wagonBuffer.MaxSize)
             {
                 var res = wagonBuffer.TryFitAnimals([herb]);
@@ -57,20 +66,17 @@ public class Train
             }
             else
             {
-                Console.WriteLine("wagon full");
-                Console.WriteLine(wagonBuffer);
-                Console.WriteLine(herb);
-                
                 Wagons.Add(wagonBuffer);
                 wagonBuffer = new Wagon();
+                wagonBuffer.TryFitAnimals([herb]);
             }
         }
-
+        
         if (wagonBuffer.TotalSize() > 0)
         {
             Wagons.Add(wagonBuffer);
         }
-
+        Console.WriteLine();
         Console.WriteLine("Final result:");
         Wagons.ForEach(Console.WriteLine);
     }
@@ -81,7 +87,7 @@ public class Train
         {
             original.Remove(animal);
         }
-
+        selectedAnimals.Clear();
         return original;
         // Console.WriteLine($"{original.Where(a => !selectedAnimals.Contains(a)).ToList().Count} after");
 
