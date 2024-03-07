@@ -9,11 +9,15 @@ namespace CircusTrein
         static void Main()
         {
             
-        var animals = generateList(
-            new AnimalSelection(1, 0, 0), 
-            new AnimalSelection(0, 3, 2)
+            var animals = generateList(
+                new AnimalSelection(1, 3, 2), 
+                new AnimalSelection(0, 0, 3)
             );
             var train = new Train(animals);
+            foreach (var w in train.Wagons)
+            {
+                Console.WriteLine(w);
+            }
             Console.WriteLine($"Train size: {train.Size}");
         }
         
