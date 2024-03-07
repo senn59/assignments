@@ -1,21 +1,41 @@
 namespace CircusTrein.Models;
 
-enum AnimalType
-{
-    Herbivore,
-    Carnivore
-}
-
 public class Animal
 {
-    public string Name { get; private init; }
-    public int Size { get; private init; }
+    public AnimalSize Size { get; private init; }
     public AnimalType Type { get; private init; }
 
-    public Animal(string name, int size, AnimalType type)
+    public Animal(AnimalSize size, AnimalType type)
     {
-        Name = name;
         Size = size;
         Type = type;
+    }
+
+    public bool IsCompatibleWith(Animal animal)
+    {
+
+        if (this.Type == AnimalType.Carnivore && animal.Type == AnimalType.Carnivore)
+        {
+            return false;
+        }
+
+        if (this.Type == animal.Type) return true;
+        
+        if (this.Type == AnimalType.Carnivore && this.Size >= animal.Size)
+        {
+            return false;
+        }
+
+        if (this.Type == AnimalType.Herbivore && this.Size <= animal.Size)
+        {
+            return false;
+        }
+
+        return true;
+    }
+
+    public override string ToString()
+    {
+        return $"{Type}, {Size}";
     }
 }

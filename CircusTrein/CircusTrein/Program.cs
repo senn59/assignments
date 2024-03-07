@@ -8,35 +8,35 @@ namespace CircusTrein
     {
         static void Main()
         {
-            int small = 1;
-            int medium = 3;
-            int large = 5;
-            List<Animal> animals = new List<Animal>()
-            {
-                new Animal("Lion", 3, AnimalType.Carnivore),
-                new Animal("Giraffe", 5, AnimalType.Herbivore),
-                new Animal("Elephant", 5, AnimalType.Herbivore),
-                new Animal("Bunny", 1, AnimalType.Herbivore),
-                new Animal("Dog", 1, AnimalType.Carnivore),
-            };
             
-            var circusAnimals = GenerateCircus(animals);
-            var train = new Train(circusAnimals);
-            Console.WriteLine(train.Size);
-            
-            List<AnimalCollection> GenerateCircus(List<Animal> animals)
-            {
-                Random random = new Random();
-                List<AnimalCollection> circus = new List<AnimalCollection>();
-                foreach (var animal in animals)
-                {
-                    int count = random.Next(1, 3);
-                    circus.Add(new AnimalCollection(animal, count));
-                }
-                return circus;
-            }
+        var animals = generateList(
+            new AnimalSelection(1, 0, 0), 
+            new AnimalSelection(0, 3, 2)
+            );
+            var train = new Train(animals);
+            Console.WriteLine($"Train size: {train.Size}");
+        }
+        
+        static List<Animal> generateList(AnimalSelection carnivores, AnimalSelection herbivores)
+        {
+            var animals = new List<Animal>();
+        
+            animals.AddRange(Enumerable.Repeat(new Animal(AnimalSize.Small, AnimalType.Carnivore), carnivores.Small));
+            animals.AddRange(Enumerable.Repeat(new Animal(AnimalSize.Medium, AnimalType.Carnivore), carnivores.Medium));
+            animals.AddRange(Enumerable.Repeat(new Animal(AnimalSize.Large, AnimalType.Carnivore), carnivores.Large));
+            animals.AddRange(Enumerable.Repeat(new Animal(AnimalSize.Small, AnimalType.Herbivore), herbivores.Small));
+            animals.AddRange(Enumerable.Repeat(new Animal(AnimalSize.Medium, AnimalType.Herbivore), herbivores.Medium));
+            animals.AddRange(Enumerable.Repeat(new Animal(AnimalSize.Large, AnimalType.Herbivore), herbivores.Large));
+
+            return animals;
         }
 
+        public class AnimalSelection(int small, int medium, int large)
+        {
+            public int Small = small;
+            public int Medium = medium;
+            public int Large = large;
+        }
     }
     
 }
