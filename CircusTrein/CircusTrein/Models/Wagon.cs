@@ -10,7 +10,7 @@ public class Wagon
     public string? TryFitAnimals(List<Animal> animals)
     {
         animals.AddRange(Animals);
-        if (TotalSize(animals) > MaxSize)
+        if (TotalSize() > MaxSize)
         {
             return $"Animals exceeded maxsize of {MaxSize}";
         }
@@ -37,10 +37,10 @@ public class Wagon
         return null;
     }
     
-    public int TotalSize(List<Animal> animals)
+    public int TotalSize()
     {
         int size = 0;
-        foreach (var animal in animals)
+        foreach (var animal in Animals)
         {
             size += (int) animal.Size;
         }
