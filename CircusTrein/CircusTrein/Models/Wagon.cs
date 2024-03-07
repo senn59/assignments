@@ -2,8 +2,10 @@ namespace CircusTrein.Models;
 
 public class Wagon
 {
+    public List<Animal> Animals { get; set; } = new List<Animal>();
+    
     public int MaxSize { get; private set; } = 10;
-    public List<Animal> Animals { get; private set; } = new List<Animal>();
+
 
     public string? TryFitAnimals(List<Animal> animals)
     {
