@@ -46,7 +46,7 @@ public class Train
                     if (herb != null)
                     {
                         res = wagon.TryFitAnimals([carni, herb]);
-                        _herbivoresToRemove.Remove(herb);
+                        _herbivoresToRemove.Add(herb);
                     }
                     else
                     {
@@ -68,7 +68,8 @@ public class Train
                     _carnivoresToRemove.Add(carni);
                     
                     var herbs = Herbivores.Where(a =>  (int) a.Size > (int) AnimalSize.Small);
-                    herbs = herbs.OrderBy(a => a.Size);
+                    // herbs = herbs.OrderByDescending(a => a.Size);
+                    // herbs = herbs.OrderBy(a => a.Size);
                     foreach (var herb in herbs)
                     {
                         if (wagon.TotalSize(wagon.Animals) + (int) herb.Size > wagon.MaxSize) continue;
@@ -107,8 +108,6 @@ public class Train
             }
             else
             {
-                Console.WriteLine("full");
-                Console.WriteLine(wagonBuffer.TotalSize(wagonBuffer.Animals));
                 Wagons.Add(wagonBuffer);
                 wagonBuffer = new Wagon();
                 wagonBuffer.TryFitAnimals([herb]);
@@ -123,17 +122,16 @@ public class Train
 
     private List<Animal> UpdateList(List<Animal> original, List<Animal> selectedAnimals)
     {
-        // Console.WriteLine($"{selectedAnimals.Count} to remove");
-        // Console.WriteLine($"{original.Count} current");
-        // foreach (var animal in selectedAnimals)
-        // {
-        //     original.Remove(animal);
-        // }
-        // Console.WriteLine($"{original.Count} after");
+        var beforeCount = original.Count;
+        foreach (var animal in selectedAnimals)
+        {
+            original.Remove(animal);
+        }
+        Console.WriteLine($"{beforeCount} - {selectedAnimals.Count} = {original.Count}");
 
-        // return original;
+        return original;
         // Console.WriteLine($"{original.Where(a => !selectedAnimals.Contains(a)).ToList().Count} after");
 
-        return original.Where(a => !selectedAnimals.Contains(a)).ToList();
+        // return original.Where(a => !selectedAnimals.Contains(a)).ToList();
     }
 }

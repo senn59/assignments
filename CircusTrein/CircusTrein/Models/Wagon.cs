@@ -51,7 +51,7 @@ public class Wagon
         string str = "[ \n";
         foreach (var a in Animals)
         {
-            str += $"{a} \n";
+            str += $"   {a} \n";
         }
 
         str += "]";
