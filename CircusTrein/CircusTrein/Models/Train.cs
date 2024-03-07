@@ -3,34 +3,34 @@ namespace CircusTrein.Models;
 public class Train
 {
     public List<Wagon> Wagons { get; private set; } = new List<Wagon>();
-    private List<AnimalCollection> AnimalsToTransport { get; set; }
     public int Size => Wagons.Count;
     
-    private IEnumerable<AnimalCollection> Herbivores { get; set; }
-    private IEnumerable<AnimalCollection> Carnivores { get; set; }
+    private List<Animal> Herbivores { get; set; }
+    private List<Animal> Carnivores { get; set; }
+    private List<Animal> _carnivoresToRemove = new List<Animal>();
+    private List<Animal> _herbivoresToRemove = new List<Animal>();
     
 
-    public Train(List<AnimalCollection> animals)
+    public Train(List<Animal> animals)
     {
-        AnimalsToTransport = animals;
-        Herbivores = animals.Where(a => a.Animal.Type == AnimalType.Herbivore);
-        Herbivores = Herbivores.OrderByDescending(a => a.Animal.Size);
-        Carnivores = animals.Where(a => a.Animal.Type == AnimalType.Carnivore);
-        Carnivores = Carnivores.OrderByDescending(a => a.Animal.Size);
+        Herbivores = animals.Where(a => a.Type == AnimalType.Herbivore).ToList();
+        Herbivores = Herbivores.OrderBy(a => a.Size).ToList();
+        Carnivores = animals.Where(a => a.Type == AnimalType.Carnivore).ToList();
+        Carnivores = Carnivores.OrderByDescending(a => a.Size).ToList();
         CreateWagon();
     }
+    
     private void CreateWagon()
     {
-
-        List<Animal> AnimalBuffer = new List<Animal>();
-        foreach (var a in Carnivores)
+        foreach (var carni in Carnivores)
         {
-            switch (a.Animal.Size)
+            Herbivores = UpdateList(Herbivores, _herbivoresToRemove);
+            switch (carni.Size)
             {
-                case 5:
+                case AnimalSize.Large:
                 {
                     Wagon wagon = new Wagon();
-                    var res = wagon.TryFitAnimals(a.Animal);
+                    var res = wagon.TryFitAnimals([carni]);
                     if (res != null)
                     {
                         Console.WriteLine(res);
@@ -38,17 +38,102 @@ public class Train
                     }
                     Wagons.Add(wagon);
                 } break;
-                case 3:
+                case AnimalSize.Medium:
                 {
                     Wagon wagon = new Wagon();
-                    var herb = Herbivores.FirstOrDefault(a => a.Animal.Size == 5);
+                    var herb = Herbivores.FirstOrDefault(c => c.Size == AnimalSize.Large);
+                    string? res = null;
                     if (herb != null)
                     {
-                        wagon.TryFitAnimals(new List<Animal>() { a.Animal, herb.Animal });
+                        res = wagon.TryFitAnimals([carni, herb]);
+                        _herbivoresToRemove.Remove(herb);
                     }
+                    else
+                    {
+                        res = wagon.TryFitAnimals([carni]);
+                        _carnivoresToRemove.Add(carni);
+                    }
+
+                    if (res != null)
+                    {
+                        Console.WriteLine(res);
+                        return;
+                    }
+                    Wagons.Add(wagon);
                 } break;
-                
+                case AnimalSize.Small:
+                {
+                    Wagon wagon = new Wagon();
+                    wagon.TryFitAnimals([carni]);
+                    _carnivoresToRemove.Add(carni);
+                    
+                    var herbs = Herbivores.Where(a =>  (int) a.Size > (int) AnimalSize.Small);
+                    herbs = herbs.OrderBy(a => a.Size);
+                    foreach (var herb in herbs)
+                    {
+                        if (wagon.TotalSize(wagon.Animals) + (int) herb.Size > wagon.MaxSize) continue;
+                        var res = wagon.TryFitAnimals([herb]);
+                        if (res != null)
+                        {
+                            Console.WriteLine(res);
+                            return;
+                        }
+                        _herbivoresToRemove.Add(herb);
+                    }
+                    Wagons.Add(wagon);
+                } break;
             }
         }
+        
+     
+        Herbivores = UpdateList(Herbivores, _herbivoresToRemove);
+        
+        if (Herbivores.Count <= 0)
+        {
+            return;
+        }
+
+        var wagonBuffer = new Wagon();
+        foreach (var herb in Herbivores)
+        {
+            if (wagonBuffer.TotalSize(wagonBuffer.Animals) + (int) herb.Size <= wagonBuffer.MaxSize)
+            {
+                var res = wagonBuffer.TryFitAnimals([herb]);
+                if (res != null)
+                {
+                    Console.WriteLine(res);
+                    return;
+                }
+            }
+            else
+            {
+                Console.WriteLine("full");
+                Console.WriteLine(wagonBuffer.TotalSize(wagonBuffer.Animals));
+                Wagons.Add(wagonBuffer);
+                wagonBuffer = new Wagon();
+                wagonBuffer.TryFitAnimals([herb]);
+            }
+        }
+
+        if (wagonBuffer.Animals.Count > 0)
+        {
+            Wagons.Add(wagonBuffer);
+        }
+    }
+
+    private List<Animal> UpdateList(List<Animal> original, List<Animal> selectedAnimals)
+    {
+        // Console.WriteLine($"{selectedAnimals.Count} to remove");
+        // Console.WriteLine($"{original.Count} current");
+        // foreach (var animal in selectedAnimals)
+        // {
+        //     original.Remove(animal);
+        // }
+        // Console.WriteLine($"{original.Count} after");
+
+        // return original;
+        // Console.WriteLine($"{original.Where(a => !selectedAnimals.Contains(a)).ToList().Count} after");
+
+        return original.Where(a => !selectedAnimals.Contains(a)).ToList();
     }
 }
