@@ -12,6 +12,7 @@ public class Tests
             new AnimalSelection(0, 3, 2)
             );
         var train = new Train(animals);
+        foreach (var w in train.Wagons) Console.WriteLine(w);
         Assert.That(train.Size, Is.EqualTo(2));
     }
     
@@ -23,6 +24,7 @@ public class Tests
             new AnimalSelection(5, 2, 1)
             );
         var train = new Train(animals);
+        foreach (var w in train.Wagons) Console.WriteLine(w);
         Assert.That(train.Size, Is.EqualTo(2));
     }
     
@@ -34,6 +36,7 @@ public class Tests
             new AnimalSelection(1, 1, 1)
             );
         var train = new Train(animals);
+        foreach (var w in train.Wagons) Console.WriteLine(w);
         Assert.That(train.Size, Is.EqualTo(4));
     }
     
@@ -45,6 +48,7 @@ public class Tests
             new AnimalSelection(1, 5, 1)
             );
         var train = new Train(animals);
+        foreach (var w in train.Wagons) Console.WriteLine(w);
         Assert.That(train.Size, Is.EqualTo(5));
     }
     
@@ -56,6 +60,7 @@ public class Tests
             new AnimalSelection(1, 1, 2)
             );
         var train = new Train(animals);
+        foreach (var w in train.Wagons) Console.WriteLine(w);
         Assert.That(train.Size, Is.EqualTo(2));
     }
 
@@ -67,6 +72,7 @@ public class Tests
             new AnimalSelection(0, 2, 3)
             );
         var train = new Train(animals);
+        foreach (var w in train.Wagons) Console.WriteLine(w);
         Assert.That(train.Size, Is.EqualTo(3));
     }
     
@@ -78,6 +84,7 @@ public class Tests
             new AnimalSelection(0, 5, 6)
             );
         var train = new Train(animals);
+        foreach (var w in train.Wagons) Console.WriteLine(w);
         Assert.That(train.Size, Is.EqualTo(13));
     }
     
@@ -89,6 +96,7 @@ public class Tests
             new AnimalSelection(5, 3, 1)
             );
         var train = new Train(animals);
+        foreach (var w in train.Wagons) Console.WriteLine(w);
         Assert.That(train.Size, Is.EqualTo(2));
     }
     
@@ -100,6 +108,7 @@ public class Tests
             new AnimalSelection(0, 0, 3)
             );
         var train = new Train(animals);
+        foreach (var w in train.Wagons) Console.WriteLine(w);
         Assert.That(train.Size, Is.EqualTo(6));
     }
     
@@ -111,6 +120,7 @@ public class Tests
             new AnimalSelection(5, 5, 5)
             );
         var train = new Train(animals);
+        foreach (var w in train.Wagons) Console.WriteLine(w);
         Assert.That(train.Size, Is.EqualTo(8));
     }
     
@@ -122,6 +132,7 @@ public class Tests
             new AnimalSelection(1, 3, 2)
             );
         var train = new Train(animals);
+        foreach (var w in train.Wagons) Console.WriteLine(w);
         Assert.That(train.Size, Is.EqualTo(2));
     }
     
@@ -133,6 +144,7 @@ public class Tests
             new AnimalSelection(0, 3, 2)
             );
         var train = new Train(animals);
+        foreach (var w in train.Wagons) Console.WriteLine(w);
         Assert.That(train.Size, Is.EqualTo(2));
     }
     
@@ -144,6 +156,7 @@ public class Tests
             new AnimalSelection(0, 2, 2)
             );
         var train = new Train(animals);
+        foreach (var w in train.Wagons) Console.WriteLine(w);
         Assert.That(train.Size, Is.EqualTo(2));
     }
     
@@ -155,6 +168,7 @@ public class Tests
             new AnimalSelection(0, 6, 2)
             );
         var train = new Train(animals);
+        foreach (var w in train.Wagons) Console.WriteLine(w);
         Assert.That(train.Size, Is.EqualTo(3));
     }
     

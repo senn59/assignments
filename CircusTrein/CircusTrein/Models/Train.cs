@@ -2,13 +2,81 @@ namespace CircusTrein.Models;
 
 public class Train
 {
-    public List<Wagon> Wagons { get; private set; } = new List<Wagon>();
+    private List<Wagon> _wagons = new List<Wagon>();
+    
+    public IReadOnlyList<Wagon> Wagons => _wagons;
     public int Size => Wagons.Count;
     private List<Animal> _animals;
 
     public Train(List<Animal> animals)
     {
-        var mediumHerbsCount = animals.Count(a => a.Size == AnimalSize.Medium && a.Type == AnimalType.Herbivore);
+        _animals = GetSortedAnimals(animals);
+        LoadAnimals();
+    }
+    
+    private void LoadAnimals()
+    {
+        foreach (var animal in _animals)
+        {
+            if (animal.Type == AnimalType.Carnivore)
+            {
+                var wagon = new Wagon();
+                var err = wagon.TryFitAnimal(animal);
+                if (err != null)
+                {
+                    //TODO: shouldnt have prints in this class
+                    Console.WriteLine(err);
+                    return;
+                }
+                _wagons.Add(wagon);
+                continue;
+            }
+
+            if (!TryPutInExistingWagon(animal))
+            {
+                var wagon = new Wagon();
+                var err = wagon.TryFitAnimal(animal);
+                if (err != null)
+                {
+                    Console.WriteLine(err);
+                    return;
+                }
+                _wagons.Add(wagon);
+            }
+            
+        }
+    }
+
+    private bool TryPutInExistingWagon(Animal animal)
+    {
+        bool foundWagon = false;
+        foreach (var wagon in Wagons)
+        {
+            if (foundWagon)
+            {
+                return foundWagon;
+            }
+            var carnivore = wagon.Animals.FirstOrDefault(a => a.Type == AnimalType.Carnivore);
+            if (carnivore != null)
+            {
+                if (animal.Size <= carnivore.Size) continue;
+            }
+            if ((int) animal.Size + wagon.GetTotalSize() > wagon.MaxSize) continue;
+            foundWagon = true;
+            var err = wagon.TryFitAnimal(animal);
+            if (err != null)
+            {
+                Console.WriteLine(err);
+                return false;
+            }
+        }
+
+        return foundWagon;
+    }
+
+    private List<Animal> GetSortedAnimals(List<Animal> animals)
+    {
+        var mediumHerbsCount = animals.Count(a => a is { Size: AnimalSize.Medium, Type: AnimalType.Herbivore });
         var carnivoreCount = animals.Count(a => a.Type == AnimalType.Carnivore);
         
         IEnumerable<Animal> sortedAnimals = animals
@@ -22,47 +90,6 @@ public class Train
                 .ThenByDescending(a => a.Size);
         }
 
-        _animals = sortedAnimals.ToList();
-        LoadAnimals();
-    }
-    
-    private void LoadAnimals()
-    {
-        foreach (var animal in _animals)
-        {
-            if (animal.Type == AnimalType.Carnivore)
-            {
-                var wagon = new Wagon();
-                wagon.Animals.Add(animal);
-                Wagons.Add(wagon);
-                continue;
-            }
-            
-            var foundWagon = false;
-            foreach (var wagon in Wagons)
-            {
-                if (foundWagon)
-                {
-                    break;
-                }
-                var carnivore = wagon.Animals.FirstOrDefault(a => a.Type == AnimalType.Carnivore);
-                if (carnivore != null)
-                {
-                    if (animal.Size <= carnivore.Size) continue;
-                }
-                if ((int) animal.Size + wagon.GetTotalSize() > wagon.MaxSize) continue;
-                foundWagon = true;
-                wagon.Animals.Add(animal);
-            }
-
-            if (!foundWagon)
-            {
-                var wagon = new Wagon();
-                wagon.Animals.Add(animal);
-                Wagons.Add(wagon);
-            }
-            
-        }
-        Wagons.ForEach(Console.WriteLine);
+        return sortedAnimals.ToList();
     }
 }
