@@ -2,15 +2,18 @@ namespace CircusTrein.Models;
 
 public class Wagon
 {
+    //TODO: convert to ireadonlylist with fallback variable
     public List<Animal> Animals { get; set; } = new List<Animal>();
     
     public int MaxSize { get; private set; } = 10;
 
 
+    //TODO: seperate into more functions 
+    //TODO: Look into error codes or exceptions instead of returning a nullable string
     public string? TryFitAnimals(List<Animal> animals)
     {
         animals.AddRange(Animals);
-        if (TotalSize() > MaxSize)
+        if (GetTotalSize() > MaxSize)
         {
             return $"Animals exceeded maxsize of {MaxSize}";
         }
@@ -37,7 +40,7 @@ public class Wagon
         return null;
     }
     
-    public int TotalSize()
+    public int GetTotalSize()
     {
         int size = 0;
         foreach (var animal in Animals)
