@@ -22,14 +22,10 @@ public class Train
             .ToList();
         
         var mediumHerbs = _herbivores.Count(a => a.Size == AnimalSize.Medium);
-        var smallCarnis = _carnivores.Count(a => a.Size == AnimalSize.Small);
 
-        if (mediumHerbs != 0 && smallCarnis != 0)
+        if (mediumHerbs < 3)
         {
-            if (mediumHerbs % 3 != 0 && smallCarnis >= mediumHerbs)
-            {
-                _herbivores = _herbivores.OrderByDescending(a => a.Size).ToList();
-            }
+            _herbivores = _herbivores.OrderByDescending(a => a.Size).ToList();
         }
 
         
