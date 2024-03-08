@@ -4,65 +4,41 @@ public class Train
 {
     public List<Wagon> Wagons { get; private set; } = new List<Wagon>();
     public int Size => Wagons.Count;
-    
-    private List<Animal> _herbivores;
-    private List<Animal> _carnivores;
-    private List<Animal> _animals = new List<Animal>();
-    private List<Animal> _herbivoresToDelete = new List<Animal>();
-    
+    private List<Animal> _animals;
 
     public Train(List<Animal> animals)
     {
-        _herbivores = animals
-            .Where(a => a.Type == AnimalType.Herbivore)
-            .OrderBy(a => a.Size)
-            .ToList();
-        _carnivores = animals
-            .Where(a => a.Type == AnimalType.Carnivore)
-            .OrderBy(a => a.Size)
-            .ToList();
+        var mediumHerbsCount = animals.Count(a => a.Size == AnimalSize.Medium && a.Type == AnimalType.Herbivore);
+        var carnivoreCount = animals.Count(a => a.Type == AnimalType.Carnivore);
         
-        var mediumHerbs = _herbivores.Count(a => a.Size == AnimalSize.Medium);
-        
-        _animals = animals
+        IEnumerable<Animal> sortedAnimals = animals
             .OrderByDescending(a => a.Type)
-            .OrderBy(a => a.Size)
-            .ToList();
+            .ThenBy(a => a.Size);
 
-        if (mediumHerbs < 3)
+        if (mediumHerbsCount < 3 || carnivoreCount == 0)
         {
-            _animals = animals
+            sortedAnimals = animals
                 .OrderByDescending(a => a.Type)
-                .OrderByDescending(a => a.Size)
-                .ToList();
-            _herbivores = _herbivores.OrderByDescending(a => a.Size).ToList();
+                .ThenByDescending(a => a.Size);
         }
 
-        if (_carnivores.Count == 0)
-        {
-            _herbivores = _herbivores.OrderByDescending(a => a.Size).ToList();
-        }
-
-        
+        _animals = sortedAnimals.ToList();
         LoadAnimals();
     }
     
     private void LoadAnimals()
     {
-
-        var carniWagons = new List<Wagon>();
-        var herbiWagons = new List<Wagon>();
-        
-        foreach (var carni in _carnivores)
+        foreach (var animal in _animals)
         {
-            var wagon = new Wagon();
-            wagon.Animals.Add(carni);
-            Wagons.Add(wagon);
-        }
-
-        foreach (var herb in _herbivores)
-        {
-            bool foundWagon = false;
+            if (animal.Type == AnimalType.Carnivore)
+            {
+                var wagon = new Wagon();
+                wagon.Animals.Add(animal);
+                Wagons.Add(wagon);
+                continue;
+            }
+            
+            var foundWagon = false;
             foreach (var wagon in Wagons)
             {
                 if (foundWagon)
@@ -72,67 +48,21 @@ public class Train
                 var carnivore = wagon.Animals.FirstOrDefault(a => a.Type == AnimalType.Carnivore);
                 if (carnivore != null)
                 {
-                    if (herb.Size <= carnivore.Size) continue;
-                    if ((int) herb.Size + wagon.GetTotalSize() > wagon.MaxSize) continue;
-                    foundWagon = true;
-                    wagon.Animals.Add(herb);
+                    if (animal.Size <= carnivore.Size) continue;
                 }
-                else
-                {
-                    if ((int) herb.Size + wagon.GetTotalSize() > wagon.MaxSize) continue;
-                    foundWagon = true;
-                    wagon.Animals.Add(herb);
-                }
+                if ((int) animal.Size + wagon.GetTotalSize() > wagon.MaxSize) continue;
+                foundWagon = true;
+                wagon.Animals.Add(animal);
             }
 
             if (!foundWagon)
             {
                 var wagon = new Wagon();
-                wagon.Animals.Add(herb);
+                wagon.Animals.Add(animal);
                 Wagons.Add(wagon);
             }
+            
         }
-        
-        // var wagonBuffer = new Wagon();
-        // var wagonsToAdd = new List<Wagon>();
-        // foreach (var herb in _herbivores)
-        // {
-        //     bool addedHerb = false;
-        //     foreach (var wagon in Wagons)
-        //     {
-        //         if (wagon.Animals[0].Size < herb.Size && wagon.GetTotalSize() + (int) herb.Size <= wagon.MaxSize)
-        //         {
-        //             wagon.Animals.Add(herb);
-        //             addedHerb = true;
-        //             break;
-        //         }
-        //     }
-        //     
-        //     if (addedHerb)
-        //     {
-        //         continue;
-        //     }
-        //
-        //     if (wagonBuffer.GetTotalSize() + (int)herb.Size <= wagonBuffer.MaxSize)
-        //     {
-        //         wagonBuffer.Animals.Add(herb);
-        //     }
-        //     else
-        //     {
-        //         wagonsToAdd.Add(wagonBuffer);
-        //         wagonBuffer = new Wagon();
-        //         wagonBuffer.Animals.Add(herb);
-        //     }
-        // }
-        // if (wagonBuffer.Animals.Count > 0)
-        // {
-        //     wagonsToAdd.Add(wagonBuffer);
-        // }
-        //
-        // if (wagonsToAdd.Count > 0)
-        // {
-        //     Wagons.AddRange(wagonsToAdd);
-        // }
         Wagons.ForEach(Console.WriteLine);
     }
 }
