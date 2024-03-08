@@ -1,65 +1,63 @@
+using System.Data;
+
 namespace CircusTrein.Models;
 
 public class Wagon
 {
     //TODO: convert to ireadonlylist with fallback variable
-    public List<Animal> Animals { get; set; } = new List<Animal>();
+
+    private List<Animal> _animals = new List<Animal>();
+    
+    public IReadOnlyList<Animal> Animals => _animals;
     
     public int MaxSize { get; private set; } = 10;
 
 
-    //TODO: seperate into more functions 
     //TODO: Look into error codes or exceptions instead of returning a nullable string
-    public string? TryFitAnimals(List<Animal> animals)
+    public string? TryFitAnimal(Animal animal)
     {
-        animals.AddRange(Animals);
-        if (GetTotalSize() > MaxSize)
+        if (GetTotalSize() + (int) animal.Size > MaxSize)
         {
-            return $"Animals exceeded maxsize of {MaxSize}";
+            return $"Adding animal {animal} exceeds the maximum wagon size of {MaxSize}";
         }
 
-        if (animals.Count < 2)
+        var res = CheckCompatiblity(animal);
+        if (res != null)
         {
-            Animals = animals;
-            return null;
+            return res;
         }
+        
+        _animals.Add(animal);
+        return null;
+    }
 
-        for (int i = 0; i < animals.Count; i++)
+    private string? CheckCompatiblity(Animal animalToAdd)
+    {
+        //TODO: fallback variable of public property gebruiken hier?
+        foreach (var animal in _animals)
         {
-            for (int j = i + 1; j < animals.Count; j++)
+            if (!animalToAdd.IsCompatibleWith(animal))
             {
-                if (!animals[i].IsCompatibleWith(animals[j]))
-                {
-                    return $"Animal ({animals[i]}) is not compatible with Animal ({animals[j]})";
-                }
-                
+                return $"Animal ({animal}) is not compatible with Animal ({animalToAdd})";
             }
+            
         }
-
-        Animals = animals;
         return null;
     }
     
     public int GetTotalSize()
     {
-        int size = 0;
-        foreach (var animal in Animals)
-        {
-            size += (int) animal.Size;
-        }
-
-        return size;
+        return _animals.Sum(animal => (int)animal.Size);
     }
 
     public override string ToString()
     {
-        string str = "[ \n";
-        foreach (var a in Animals)
+        var str = "[ \n";
+        foreach (var a in _animals)
         {
-            str += $"   {a} \n";
+            str += $"\t{a}\n";
         }
-
-        str += "]";
+        str += "]\n";
         return str;
     }
 }
