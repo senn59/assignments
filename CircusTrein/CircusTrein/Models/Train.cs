@@ -7,6 +7,7 @@ public class Train
     
     private List<Animal> _herbivores;
     private List<Animal> _carnivores;
+    private List<Animal> _animals = new List<Animal>();
     private List<Animal> _herbivoresToDelete = new List<Animal>();
     
 
@@ -22,8 +23,22 @@ public class Train
             .ToList();
         
         var mediumHerbs = _herbivores.Count(a => a.Size == AnimalSize.Medium);
+        
+        _animals = animals
+            .OrderByDescending(a => a.Type)
+            .OrderBy(a => a.Size)
+            .ToList();
 
         if (mediumHerbs < 3)
+        {
+            _animals = animals
+                .OrderByDescending(a => a.Type)
+                .OrderByDescending(a => a.Size)
+                .ToList();
+            _herbivores = _herbivores.OrderByDescending(a => a.Size).ToList();
+        }
+
+        if (_carnivores.Count == 0)
         {
             _herbivores = _herbivores.OrderByDescending(a => a.Size).ToList();
         }
@@ -34,53 +49,90 @@ public class Train
     
     private void LoadAnimals()
     {
+
+        var carniWagons = new List<Wagon>();
+        var herbiWagons = new List<Wagon>();
+        
         foreach (var carni in _carnivores)
         {
             var wagon = new Wagon();
             wagon.Animals.Add(carni);
             Wagons.Add(wagon);
         }
-        
-        var wagonBuffer = new Wagon();
-        var wagonsToAdd = new List<Wagon>();
+
         foreach (var herb in _herbivores)
         {
-            bool addedHerb = false;
+            bool foundWagon = false;
             foreach (var wagon in Wagons)
             {
-                if (wagon.Animals[0].Size < herb.Size && wagon.GetTotalSize() + (int) herb.Size <= wagon.MaxSize)
+                if (foundWagon)
                 {
-                    wagon.Animals.Add(herb);
-                    addedHerb = true;
                     break;
                 }
-            }
-            
-            if (addedHerb)
-            {
-                continue;
+                var carnivore = wagon.Animals.FirstOrDefault(a => a.Type == AnimalType.Carnivore);
+                if (carnivore != null)
+                {
+                    if (herb.Size <= carnivore.Size) continue;
+                    if ((int) herb.Size + wagon.GetTotalSize() > wagon.MaxSize) continue;
+                    foundWagon = true;
+                    wagon.Animals.Add(herb);
+                }
+                else
+                {
+                    if ((int) herb.Size + wagon.GetTotalSize() > wagon.MaxSize) continue;
+                    foundWagon = true;
+                    wagon.Animals.Add(herb);
+                }
             }
 
-            if (wagonBuffer.GetTotalSize() + (int)herb.Size <= wagonBuffer.MaxSize)
+            if (!foundWagon)
             {
-                wagonBuffer.Animals.Add(herb);
-            }
-            else
-            {
-                wagonsToAdd.Add(wagonBuffer);
-                wagonBuffer = new Wagon();
-                wagonBuffer.Animals.Add(herb);
+                var wagon = new Wagon();
+                wagon.Animals.Add(herb);
+                Wagons.Add(wagon);
             }
         }
-        if (wagonBuffer.Animals.Count > 0)
-        {
-            wagonsToAdd.Add(wagonBuffer);
-        }
-
-        if (wagonsToAdd.Count > 0)
-        {
-            Wagons.AddRange(wagonsToAdd);
-        }
+        
+        // var wagonBuffer = new Wagon();
+        // var wagonsToAdd = new List<Wagon>();
+        // foreach (var herb in _herbivores)
+        // {
+        //     bool addedHerb = false;
+        //     foreach (var wagon in Wagons)
+        //     {
+        //         if (wagon.Animals[0].Size < herb.Size && wagon.GetTotalSize() + (int) herb.Size <= wagon.MaxSize)
+        //         {
+        //             wagon.Animals.Add(herb);
+        //             addedHerb = true;
+        //             break;
+        //         }
+        //     }
+        //     
+        //     if (addedHerb)
+        //     {
+        //         continue;
+        //     }
+        //
+        //     if (wagonBuffer.GetTotalSize() + (int)herb.Size <= wagonBuffer.MaxSize)
+        //     {
+        //         wagonBuffer.Animals.Add(herb);
+        //     }
+        //     else
+        //     {
+        //         wagonsToAdd.Add(wagonBuffer);
+        //         wagonBuffer = new Wagon();
+        //         wagonBuffer.Animals.Add(herb);
+        //     }
+        // }
+        // if (wagonBuffer.Animals.Count > 0)
+        // {
+        //     wagonsToAdd.Add(wagonBuffer);
+        // }
+        //
+        // if (wagonsToAdd.Count > 0)
+        // {
+        //     Wagons.AddRange(wagonsToAdd);
+        // }
         Wagons.ForEach(Console.WriteLine);
     }
 }
