@@ -10,10 +10,10 @@ public class Animal
         Size = size;
         Type = type;
     }
-
+    
+    //TODO: check if this can be done more efficiently
     public bool IsCompatibleWith(Animal animal)
     {
-
         if (this.Type == AnimalType.Carnivore && animal.Type == AnimalType.Carnivore)
         {
             return false;
