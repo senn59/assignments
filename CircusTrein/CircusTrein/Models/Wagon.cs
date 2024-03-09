@@ -1,4 +1,5 @@
 using System.Data;
+using Microsoft.VisualBasic.CompilerServices;
 
 namespace CircusTrein.Models;
 
@@ -14,35 +15,34 @@ public class Wagon
 
 
     //TODO: Look into error codes or exceptions instead of returning a nullable string
-    public string? TryFitAnimal(Animal animal)
+    public void TryFitAnimal(Animal animal)
     {
         if (GetTotalSize() + (int) animal.Size > MaxSize)
         {
-            return $"Adding animal {animal} exceeds the maximum wagon size of {MaxSize}";
+            throw new ExceedsMaxWagonSizeException(
+                $"Adding animal {animal} exceeds the maximum wagon size of {MaxSize}");
         }
 
-        var res = CheckCompatiblity(animal);
-        if (res != null)
+        if (!IsCompatible(animal))
         {
-            return res;
+            throw new IncompatibleAnimalException(
+                $"Animal {animal} is not compatible with other animals in the wagon.");
         }
-        
         _animals.Add(animal);
-        return null;
     }
 
-    private string? CheckCompatiblity(Animal animalToAdd)
+    private bool IsCompatible(Animal animalToAdd)
     {
         //TODO: fallback variable of public property gebruiken hier?
         foreach (var animal in _animals)
         {
             if (!animalToAdd.IsCompatibleWith(animal))
             {
-                return $"Animal ({animal}) is not compatible with Animal ({animalToAdd})";
+                return false;
             }
-            
         }
-        return null;
+
+        return true;
     }
     
     public int GetTotalSize()

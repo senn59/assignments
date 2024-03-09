@@ -14,12 +14,10 @@ public class Animal
     //TODO: check if this can be done more efficiently
     public bool IsCompatibleWith(Animal animal)
     {
-        if (this.Type == AnimalType.Carnivore && animal.Type == AnimalType.Carnivore)
+        if (this.Type == animal.Type)
         {
-            return false;
+            return this.Type == AnimalType.Herbivore;
         }
-
-        if (this.Type == animal.Type) return true;
         
         if (this.Type == AnimalType.Carnivore && this.Size >= animal.Size)
         {
