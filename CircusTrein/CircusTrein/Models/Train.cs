@@ -21,13 +21,7 @@ public class Train
             if (animal.Type == AnimalType.Carnivore)
             {
                 var wagon = new Wagon();
-                var err = wagon.TryFitAnimal(animal);
-                if (err != null)
-                {
-                    //TODO: shouldnt have prints in this class
-                    Console.WriteLine(err);
-                    return;
-                }
+                wagon.TryFitAnimal(animal);
                 _wagons.Add(wagon);
                 continue;
             }
@@ -35,12 +29,7 @@ public class Train
             if (!TryPutInExistingWagon(animal))
             {
                 var wagon = new Wagon();
-                var err = wagon.TryFitAnimal(animal);
-                if (err != null)
-                {
-                    Console.WriteLine(err);
-                    return;
-                }
+                wagon.TryFitAnimal(animal);
                 _wagons.Add(wagon);
             }
             
@@ -49,7 +38,7 @@ public class Train
 
     private bool TryPutInExistingWagon(Animal animal)
     {
-        bool foundWagon = false;
+        var foundWagon = false;
         foreach (var wagon in Wagons)
         {
             if (foundWagon)
@@ -63,12 +52,7 @@ public class Train
             }
             if ((int) animal.Size + wagon.GetTotalSize() > wagon.MaxSize) continue;
             foundWagon = true;
-            var err = wagon.TryFitAnimal(animal);
-            if (err != null)
-            {
-                Console.WriteLine(err);
-                return false;
-            }
+            wagon.TryFitAnimal(animal);
         }
 
         return foundWagon;
