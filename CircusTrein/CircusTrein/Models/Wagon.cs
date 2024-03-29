@@ -17,16 +17,16 @@ public class Wagon
     //TODO: Look into error codes or exceptions instead of returning a nullable string
     public void TryFitAnimal(Animal animal)
     {
-        if (GetTotalSize() + (int) animal.Size > MaxSize)
-        {
-            throw new ExceedsMaxWagonSizeException(
-                $"Adding animal {animal} exceeds the maximum wagon size of {MaxSize}");
-        }
-
         if (!IsCompatible(animal))
         {
             throw new IncompatibleAnimalException(
                 $"Animal {animal} is not compatible with other animals in the wagon.");
+        }
+        
+        if (GetTotalSize() + (int) animal.Size > MaxSize)
+        {
+            throw new ExceedsMaxWagonSizeException(
+                $"Adding animal {animal} exceeds the maximum wagon size of {MaxSize}");
         }
         _animals.Add(animal);
     }

@@ -1,4 +1,4 @@
-namespace CircusTrein.Tests.utilties;
+namespace CircusTrein.Tests.utilities;
 
 public class AnimalSelection(int small, int medium, int large)
 {

@@ -1,5 +1,5 @@
 using CircusTrein.Models;
-namespace CircusTrein.Tests.utilties;
+namespace CircusTrein.Tests.utilities;
 
 public static class AnimalListGenerator
 {

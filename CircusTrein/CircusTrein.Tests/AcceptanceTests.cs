@@ -1,5 +1,5 @@
 using CircusTrein.Models;
-using CircusTrein.Tests.utilties;
+using CircusTrein.Tests.utilities;
 
 namespace CircusTrein.Tests;
 
