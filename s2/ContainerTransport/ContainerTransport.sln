@@ -1,0 +1,22 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ContainerTransport.Core", "ContainerTransport.Core\ContainerTransport.Core.csproj", "{312F0B27-B1C5-416A-8FC4-C0F313468BBB}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ContainerTransport.UI", "ContainerTransport.UI\ContainerTransport.UI.csproj", "{DAABE516-3899-44F5-BF2A-37BD00192DAF}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{312F0B27-B1C5-416A-8FC4-C0F313468BBB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{312F0B27-B1C5-416A-8FC4-C0F313468BBB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{312F0B27-B1C5-416A-8FC4-C0F313468BBB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{312F0B27-B1C5-416A-8FC4-C0F313468BBB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DAABE516-3899-44F5-BF2A-37BD00192DAF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DAABE516-3899-44F5-BF2A-37BD00192DAF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DAABE516-3899-44F5-BF2A-37BD00192DAF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DAABE516-3899-44F5-BF2A-37BD00192DAF}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
