@@ -24,17 +24,43 @@ public class Ship
 
     private void PlaceContainer(Container c)
     {
-        for (int x = 0; x < Width; x++)
+        var leftStart = TryPlace(c);
+        var rightStart = TryPlace(c, true);
+        int x;
+        int y;
+        // Console.WriteLine($"left: {leftStart.WeightDifference} right: {rightStart.WeightDifference}");
+        if (leftStart.WeightDifference < rightStart.WeightDifference)
         {
-            for (int y = 0; y < Length; y++)
+            x = leftStart.Coords.x;
+            y = leftStart.Coords.y;
+        }
+        else
+        {
+            x = rightStart.Coords.x;
+            y = rightStart.Coords.y;
+        }
+        _cargo[x, y].Add(c);
+    }
+
+    private ((int x, int y) Coords, float WeightDifference) TryPlace(Container c,bool reverse = false)
+    {
+        var initVal = reverse ? Width - 1 : 0;
+        var endVal = reverse ? -1 : Width;
+        var step = reverse ? -1 : +1;
+
+        for (var x = initVal; x != endVal; x += step)
+        {
+            for (var y = 0; y < Length; y++)
             {
                 if (CanPlace(c, x, y))
                 {
-                    _cargo[x, y].Add(c);
-                    return;
+                    var cargoCopy = CreateCopy();
+                    cargoCopy[x, y].Add(c);
+                    return ((x, y), CalculateWeightDifference(cargoCopy));
                 }
             }
         }
+        throw new Exception("Could not place container");
     }
 
     private bool CanPlace(Container c, int x, int y)
@@ -47,7 +73,7 @@ public class Ship
             case ContainerType.Normal:
                 return isLightEnough;
             case ContainerType.Valuable:
-                return (y == 0 || x == Length - 1) && !hasValuableContainer;
+                return (y == 0 || y == Length - 1) && !hasValuableContainer;
             case ContainerType.Coolable:
                 return y == 0 && isLightEnough;
             case ContainerType.CoolableValuable:
@@ -111,9 +137,28 @@ public class Ship
         }
         weightLeft += weightMiddle / 2;
         weightRight += weightMiddle / 2;
-        var loadedWeight = weightLeft + weightRight + weightMiddle;
+        var loadedWeight = weightLeft + weightRight;
         var left = weightLeft / loadedWeight * 100;
         var right = weightRight / loadedWeight * 100;
         return Math.Abs(left - right);
+    }
+
+    private Stack[,] CreateCopy()
+    {
+        var copy = (Stack[,])_cargo.Clone();
+        for (int x = 0; x < Width; x++)
+        {
+            for (int y = 0; y < Length; y++)
+            {
+                var stack = copy[x, y];
+                copy[x, y] = new Stack();
+                foreach (var c in stack.Containers)
+                {
+                    copy[x, y].Add(c);
+                }
+            }
+        }
+
+        return copy;
     }
 }
