@@ -3,5 +3,5 @@ namespace ContainerTransport.Core;
 public enum ContainerLoad
 {
     Empty = 4,
-    Full = 10
+    Full = 30
 }

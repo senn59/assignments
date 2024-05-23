@@ -1,10 +1,10 @@
 ﻿using ContainerTransport.Core;
 
 Console.WriteLine("Hello World!");
-var normal = new Container(ContainerType.Normal, ContainerLoad.Empty);
-var coolable = new Container(ContainerType.Coolable, ContainerLoad.Empty);
-var valuable = new Container(ContainerType.Valuable, ContainerLoad.Empty);
-var coolableValuable = new Container(ContainerType.CoolableValuable, ContainerLoad.Empty);
+var normal = new Container(ContainerType.Normal, ContainerLoad.Full);
+var coolable = new Container(ContainerType.Coolable, ContainerLoad.Full);
+var valuable = new Container(ContainerType.Valuable, ContainerLoad.Full);
+var coolableValuable = new Container(ContainerType.CoolableValuable, ContainerLoad.Full);
 
 var containers = new List<Container>()
 {

@@ -16,8 +16,10 @@ public class Ship
         Width = width;
         MaxWeight = length * width * 150; //max stack size
         _cargo = new Stack[width, length];
+        FillArray();
         _containers = containers.OrderByDescending(c => c.Type).ToList();
         _containers.ForEach(PlaceContainer);
+        ReverseStacks();
     }
 
     private void PlaceContainer(Container c)
@@ -41,17 +43,49 @@ public class Ship
 
     private void PlaceNormalContainer(Container c)
     {
-        
+        for (var i = 0; i < _cargo.GetLength(0); i++)
+        {
+            for (var j = 0; j < _cargo.GetLength(1); j++)
+            {
+                var stack = _cargo[i, j];
+                if (stack.Weight < 150)
+                {
+                    stack.Add(c);
+                    return;
+                }
+            }
+        }
     }
 
     private void PlaceValuableContainer(Container c)
     {
-        
+        int[] rows = [0, Width - 1];
+        for (var i = 0; i < rows.Length; i++)
+        {
+            for (var j = 0; j < _cargo.GetLength(1); j++)
+            {
+                var stack = _cargo[j, rows[i]];
+                if (stack.Size != 0) continue;
+                stack.Add(c);
+                return;
+            }
+        }
+
     }
 
     private void PlaceCoolableContainer(Container c)
     {
-        
+        var row = 0;
+        for (var i = 0; i < _cargo.GetLength(1); i++)
+        {
+            var stack = _cargo[i, row];
+            stack.Add(c);
+            if (stack.Weight < 150)
+            {
+                stack.Add(c);
+                return;
+            }
+        }
     }
 
     private void PlaceCoolableValueableContainer(Container c)
@@ -59,10 +93,32 @@ public class Ship
         var row = 0;
         for (var i = 0; i < _cargo.GetLength(1); i++)
         {
-            var stack = _cargo[row, i];
+            var stack = _cargo[i, row];
             if (stack.Size != 0) continue;
             stack.Add(c);
-            _containers.Remove(c);
+            return;
+        }
+    }
+
+    private void ReverseStacks()
+    {
+        for (int i = 0; i < _cargo.GetLength(0); i++)
+        {
+            for (int j = 0; j < _cargo.GetLength(1); j++)
+            {
+                _cargo[i, j].Reverse();
+            }
+        }
+    }
+
+    private void FillArray()
+    {
+        for (int i = 0; i < _cargo.GetLength(0); i++)
+        {
+            for (int j = 0; j < _cargo.GetLength(1); j++)
+            {
+                _cargo[i, j] = new Stack();
+            }
         }
     }
 }
