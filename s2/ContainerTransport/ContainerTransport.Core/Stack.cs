@@ -6,6 +6,8 @@ public class Stack
     public IReadOnlyList<Container> Containers => _containers.AsReadOnly();
     public int Size => _containers.Count;
     public int Weight => _containers.Sum(c => (int)c.Load);
+    public int X { get; init; }
+    public int Y { get; init; }
 
     public void Add(Container container)
     {
@@ -15,7 +17,7 @@ public class Stack
         }
         _containers.Add(container);
     }
-
+    
     public void Reverse()
     {
         _containers.Reverse();

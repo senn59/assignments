@@ -3,11 +3,11 @@ namespace ContainerTransport.Core;
 public class Ship
 {
     private readonly Stack[,] _cargo;
-    private readonly List<Container> _containers;
     
     public int Length { get; private init; }
     public int Width { get; private init; }
     public int MaxWeight { get; set; }
+    public float WeightDifference => CalculateWeightDifference(Cargo);
     public Stack[,] Cargo => (Stack[,])_cargo.Clone();
 
     public Ship(int width, int length, List<Container> containers)
@@ -17,94 +17,51 @@ public class Ship
         MaxWeight = length * width * 150; //max stack size
         _cargo = new Stack[width, length];
         FillArray();
-        _containers = containers.OrderByDescending(c => c.Type).ToList();
-        _containers.ForEach(PlaceContainer);
+        containers = containers.OrderByDescending(c => c.Type).ToList();
+        containers.ForEach(PlaceContainer);
         ReverseStacks();
     }
 
     private void PlaceContainer(Container c)
     {
-        switch (c.Type)
+        for (int x = 0; x < Width; x++)
         {
-            case ContainerType.Normal:
-                PlaceNormalContainer(c);
-                return;
-            case ContainerType.Valuable:
-                PlaceValuableContainer(c);
-                return;
-            case ContainerType.Coolable:
-                PlaceCoolableContainer(c);
-                return;
-            case ContainerType.CoolableValuable:
-                PlaceCoolableValueableContainer(c);
-                return;
-        }
-    }
-
-    private void PlaceNormalContainer(Container c)
-    {
-        for (var i = 0; i < _cargo.GetLength(0); i++)
-        {
-            for (var j = 0; j < _cargo.GetLength(1); j++)
+            for (int y = 0; y < Length; y++)
             {
-                var stack = _cargo[i, j];
-                if (stack.Weight < 150)
+                if (CanPlace(c, x, y))
                 {
-                    stack.Add(c);
+                    _cargo[x, y].Add(c);
                     return;
                 }
             }
         }
     }
 
-    private void PlaceValuableContainer(Container c)
+    private bool CanPlace(Container c, int x, int y)
     {
-        int[] rows = [0, Width - 1];
-        for (var i = 0; i < rows.Length; i++)
+        var hasValuableContainer = _cargo[x, y].Containers.Any(c => 
+            c.Type is ContainerType.CoolableValuable or ContainerType.Valuable);
+        var isLightEnough = _cargo[x, y].Weight < 150;
+        switch (c.Type)
         {
-            for (var j = 0; j < _cargo.GetLength(1); j++)
-            {
-                var stack = _cargo[j, rows[i]];
-                if (stack.Size != 0) continue;
-                stack.Add(c);
-                return;
-            }
+            case ContainerType.Normal:
+                return isLightEnough;
+            case ContainerType.Valuable:
+                return (x == 0 || x == Length - 1) && !hasValuableContainer;
+            case ContainerType.Coolable:
+                return x != 0 && isLightEnough;
+            case ContainerType.CoolableValuable:
+                return x == 0 && !hasValuableContainer;
         }
-
-    }
-
-    private void PlaceCoolableContainer(Container c)
-    {
-        var row = 0;
-        for (var i = 0; i < _cargo.GetLength(1); i++)
-        {
-            var stack = _cargo[i, row];
-            stack.Add(c);
-            if (stack.Weight < 150)
-            {
-                stack.Add(c);
-                return;
-            }
-        }
-    }
-
-    private void PlaceCoolableValueableContainer(Container c)
-    {
-        var row = 0;
-        for (var i = 0; i < _cargo.GetLength(1); i++)
-        {
-            var stack = _cargo[i, row];
-            if (stack.Size != 0) continue;
-            stack.Add(c);
-            return;
-        }
+        
+        throw new Exception("Not a valid container");
     }
 
     private void ReverseStacks()
     {
-        for (int i = 0; i < _cargo.GetLength(0); i++)
+        for (int i = 0; i < Width; i++)
         {
-            for (int j = 0; j < _cargo.GetLength(1); j++)
+            for (int j = 0; j < Length; j++)
             {
                 _cargo[i, j].Reverse();
             }
@@ -113,12 +70,50 @@ public class Ship
 
     private void FillArray()
     {
-        for (int i = 0; i < _cargo.GetLength(0); i++)
+        for (int i = 0; i < Width; i++)
         {
-            for (int j = 0; j < _cargo.GetLength(1); j++)
+            for (int j = 0; j < Length; j++)
             {
                 _cargo[i, j] = new Stack();
             }
         }
+    }
+
+    private float CalculateWeightDifference(Stack[,] cargo)
+    {
+        int? middleRow = null;
+        if (Width % 2 == 1)
+        {
+            middleRow = Width / 2 + 1;
+        }
+
+        float weightLeft = 0;
+        float weightRight = 0;
+        float weightMiddle = 0;
+
+        for (var i = 0; i < cargo.GetLength(0); i++)
+        {
+            for (var j = 0; j < cargo.GetLength(1); j++)
+            {
+                if (i == middleRow - 1)
+                {
+                    weightMiddle += cargo[i, j].Weight;
+                }
+                else if (i < middleRow - 1)
+                {
+                    weightLeft += cargo[i, j].Weight;
+                }
+                else
+                {
+                    weightRight += cargo[i, j].Weight;
+                }
+            }
+        }
+        weightLeft += weightMiddle / 2;
+        weightRight += weightMiddle / 2;
+        var loadedWeight = weightLeft + weightRight + weightMiddle;
+        var left = weightLeft / loadedWeight * 100;
+        var right = weightRight / loadedWeight * 100;
+        return Math.Abs(left - right);
     }
 }
