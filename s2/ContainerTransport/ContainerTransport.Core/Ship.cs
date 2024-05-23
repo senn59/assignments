@@ -47,11 +47,11 @@ public class Ship
             case ContainerType.Normal:
                 return isLightEnough;
             case ContainerType.Valuable:
-                return (x == 0 || x == Length - 1) && !hasValuableContainer;
+                return (y == 0 || x == Length - 1) && !hasValuableContainer;
             case ContainerType.Coolable:
-                return x != 0 && isLightEnough;
+                return y == 0 && isLightEnough;
             case ContainerType.CoolableValuable:
-                return x == 0 && !hasValuableContainer;
+                return y == 0 && !hasValuableContainer;
         }
         
         throw new Exception("Not a valid container");
