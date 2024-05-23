@@ -3,11 +3,11 @@ namespace ContainerTransport.Core;
 public class Container
 {
     public ContainerType Type { get; private init; }
-    public int Weight { get; private init; }
+    public ContainerLoad Load { get; private init; }
 
-    public Container(ContainerType type, int weight)
+    public Container(ContainerType type, ContainerLoad load)
     {
         Type = type;
-        Weight = weight;
+        Load = load;
     }
 }

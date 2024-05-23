@@ -12,7 +12,7 @@ public class UrlGenerator
         return str;
     }
     
-    private static (string Types, string Weight) GenerateCargoInfo(Stack?[,] cargo)
+    private static (string Types, string Weight) GenerateCargoInfo(Stack[,] cargo)
     {
         string types = "";
         string weight = "";
@@ -29,18 +29,18 @@ public class UrlGenerator
         return (types, weight);
     }
 
-    private static (string Types, string Weight) GenerateRowStackInfo(int row, Stack?[,] cargo)
+    private static (string Types, string Weight) GenerateRowStackInfo(int row, Stack[,] cargo)
     {
         string types = "";
         string weight = "";
         for (var i = 0; i < cargo.GetLength(1); i++)
         {
             var stack = cargo[row, i];
-            if (stack == null) continue;
+            if (stack.Containers.Count == 0) continue;
             stack.Containers.ToList().ForEach(c =>
             {
                 types += (int) c.Type + "-";
-                weight += c.Weight + "-";
+                weight += (int) c.Load + "-";
             });
             types = types.TrimEnd('-');
             weight = weight.TrimEnd('-');
