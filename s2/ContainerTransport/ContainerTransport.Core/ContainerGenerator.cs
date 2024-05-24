@@ -1,6 +1,6 @@
 namespace ContainerTransport.Core;
 
-public class ShipGenerator
+public class ContainerGenerator
 {
     private ContainerType[] _types = Enum.GetValues<ContainerType>();
     private ContainerLoad[] _weights = Enum.GetValues<ContainerLoad>();

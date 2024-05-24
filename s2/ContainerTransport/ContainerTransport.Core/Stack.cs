@@ -30,4 +30,16 @@ public class Stack
     {
         return  _containers.Skip(1).Sum(c => (int)c.Load) + (int)container.Load <= 120;
     }
+
+    public override string ToString()
+    {
+        string str = "[\n";
+        for (var i = _containers.Count; i > 0; i--)
+        {
+            str += $"\t[{i}] {_containers[i]}\n";
+        }
+
+        str += "]";
+        return str;
+    }
 }

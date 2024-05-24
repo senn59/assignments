@@ -10,4 +10,9 @@ public class Container
         Type = type;
         Load = load;
     }
+
+    public override string ToString()
+    {
+        return $"{Type}, {Load}";
+    }
 }
