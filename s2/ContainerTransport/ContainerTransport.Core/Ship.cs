@@ -9,6 +9,8 @@ public class Ship
     public int MaxWeight { get; set; }
     public float WeightDifference => CalculateWeightDifference(Cargo);
     public Stack[,] Cargo => (Stack[,])_cargo.Clone();
+    private bool _startOnX;
+    private int _loops = 0;
 
     public Ship(int width, int length)
     {
@@ -19,34 +21,61 @@ public class Ship
         FillArray();
     }
 
-    public void Load(List<Container> containers)
+    public void Load(List<Container> containers, bool startOnX)
     {
+        _startOnX = startOnX;
         FillArray();
-        containers = containers.OrderByDescending(c => c.Type).ToList();
+        containers = containers.OrderByDescending(c => c.Type).ThenByDescending(c => c.Load).ToList();
         containers.ForEach(PlaceContainer);
+        Console.WriteLine($"startonX: {startOnX}  loops: {_loops}");
     }
 
     private void PlaceContainer(Container c)
     {
         var optimalPlace = FindOptimalPlace(c);
-        _cargo[optimalPlace.X, optimalPlace.Y].Add(c);
+        _loops += optimalPlace.loopCount;
+        _cargo[optimalPlace.res.X, optimalPlace.res.Y].Add(c);
     }
     
-    private PlaceResult FindOptimalPlace(Container container)
+    private (int loopCount, PlaceResult res) FindOptimalPlace(Container container)
     {
         var availablePlaces = new List<PlaceResult>();
-        for (var x = 0; x < Width; x++)
+        var loopCount = 0;
+        if (!_startOnX)
         {
-            var foundPlace = false;
+            var xWhereAvailablePlace = new List<int>();
             for (var y = 0; y < Length; y++)
             {
-                if (foundPlace) continue;
-                if (CanPlace(container, x, y))
+                for (var x = 0; x < Width; x++)
                 {
-                    foundPlace = true;
-                    var cargoCopy = CreateCopy();
-                    cargoCopy[x, y].Add(container);
-                    availablePlaces.Add(new PlaceResult(x, y, CalculateWeightDifference(cargoCopy)));
+                    if (xWhereAvailablePlace.Contains(x)) continue;
+                    loopCount++;
+                    if (CanPlace(container, x, y))
+                    {
+                        xWhereAvailablePlace.Add(x);
+                        var cargoCopy = CreateCopy();
+                        cargoCopy[x, y].Add(container);
+                        availablePlaces.Add(new PlaceResult(x, y, CalculateWeightDifference(cargoCopy)));
+                    }
+                }
+            }
+        }
+        else
+        {
+            for (var x = 0; x < Width; x++)
+            {
+                bool foundPlace = false;
+                for (var y = 0; y < Length; y++)
+                {
+                    if (foundPlace) continue;
+                    loopCount++;
+                    if (CanPlace(container, x, y))
+                    {
+                        foundPlace = true;
+                        var cargoCopy = CreateCopy();
+                        cargoCopy[x, y].Add(container);
+                        availablePlaces.Add(new PlaceResult(x, y, CalculateWeightDifference(cargoCopy)));
+                    }
                 }
             }
         }
@@ -56,7 +85,7 @@ public class Ship
             Console.WriteLine(container.Type);
             throw new Exception("Could not place container");
         }
-        return availablePlaces.OrderBy(r => r.WeightDifference).First();
+        return (loopCount, availablePlaces.OrderBy(r => r.WeightDifference).First());
 
     }
 

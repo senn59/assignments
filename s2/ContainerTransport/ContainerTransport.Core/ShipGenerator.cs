@@ -5,14 +5,13 @@ public class ShipGenerator
     private ContainerType[] _types = Enum.GetValues<ContainerType>();
     private ContainerLoad[] _weights = Enum.GetValues<ContainerLoad>();
     private Random _random = new Random();
-    public Ship GenerateRandomShip(int width, int length)
+    public List<Container> GenerateRandomContainers(Ship ship)
     {
-        var ship = new Ship(width, length);
         var containers = new List<Container>();
         var randomWeight = GetRandomWeight(ship.MaxWeight);
-        int maxCoolableValuable = _random.Next(width + 1);
-        int maxValuable = Math.Abs(_random.Next(width * 2 + 1) - maxCoolableValuable);
-        int maxCoolable = _random.Next(width * 3 + 1);
+        int maxCoolableValuable = _random.Next(ship.Width + 1);
+        int maxValuable = Math.Abs(_random.Next(ship.Width * 2 + 1) - maxCoolableValuable);
+        int maxCoolable = _random.Next(ship.Width * 3 + 1);
         
         containers.AddRange(Enumerable.Repeat(GenerateContainer(ContainerType.Coolable), maxCoolable));
         containers.AddRange(Enumerable.Repeat(GenerateContainer(ContainerType.Valuable), maxValuable));
@@ -26,9 +25,7 @@ public class ShipGenerator
             containers.Add(container);
             weight += (int)container.Load;
         }
-        
-        ship.Load(containers);
-        return ship;
+        return containers;
     }
 
     private int GetRandomWeight(int maxShipWeight)
