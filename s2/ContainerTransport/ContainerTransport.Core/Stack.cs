@@ -9,10 +9,6 @@ public class Stack
 
     public void Add(Container container)
     {
-        // if (_containers.Count > 0 && container.Type is ContainerType.Valuable or ContainerType.CoolableValuable)
-        // {
-        //     throw new Exception("Cant place container");
-        // }
         if (container.Type is ContainerType.Valuable or ContainerType.CoolableValuable || !HasValuableContainer())
         {
             _containers.Add(container);

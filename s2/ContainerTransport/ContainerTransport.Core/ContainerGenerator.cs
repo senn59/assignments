@@ -22,8 +22,11 @@ public class ContainerGenerator
         while (weight < randomWeight)
         {
             var container = GenerateContainer(ContainerType.Normal);
-            containers.Add(container);
-            weight += (int)container.Load;
+            if (weight + (int)container.Load <= ship.MaxWeight)
+            {
+                containers.Add(container);
+                weight += (int)container.Load;
+            }
         }
         return containers;
     }
@@ -31,7 +34,7 @@ public class ContainerGenerator
     private int GetRandomWeight(int maxShipWeight)
     {
         var minimumWeight = maxShipWeight / 2 + 4;
-        return _random.Next(minimumWeight, maxShipWeight);
+        return _random.Next(minimumWeight, maxShipWeight - 4);
     }
 
     private Container GenerateContainer(ContainerType type)
