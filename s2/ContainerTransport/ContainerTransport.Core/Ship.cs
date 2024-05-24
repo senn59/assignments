@@ -129,11 +129,16 @@ public class Ship
 
         float weightLeft = 0;
         float weightRight = 0;
+        float weightMiddle = 0;
 
         for (var x = 0; x < Width; x++)
         {
             for (var y = 0; y < Length; y++)
             {
+                if (x == middleRow)
+                {
+                    continue;
+                }
                 if (x < Width / 2)
                 {
                     weightLeft += cargo[x, y].Weight;
