@@ -28,6 +28,6 @@ public class Stack
 
     public bool IsLightEnoughFor(Container container)
     {
-        return  _containers.Skip(1).Sum(c => (int)c.Load) + (int)container.Load < 120;
+        return  _containers.Skip(1).Sum(c => (int)c.Load) + (int)container.Load <= 120;
     }
 }
