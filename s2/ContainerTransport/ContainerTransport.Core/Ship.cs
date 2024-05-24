@@ -10,64 +10,60 @@ public class Ship
     public float WeightDifference => CalculateWeightDifference(Cargo);
     public Stack[,] Cargo => (Stack[,])_cargo.Clone();
 
-    public Ship(int width, int length, List<Container> containers)
+    public Ship(int width, int length)
     {
         Length = length;
         Width = width;
         MaxWeight = length * width * 150; //max stack size
         _cargo = new Stack[width, length];
         FillArray();
+    }
+
+    public void Load(List<Container> containers)
+    {
+        FillArray();
         containers = containers.OrderByDescending(c => c.Type).ToList();
         containers.ForEach(PlaceContainer);
-        ReverseStacks();
     }
 
     private void PlaceContainer(Container c)
     {
-        var leftStart = TryPlace(c);
-        var rightStart = TryPlace(c, true);
-        int x;
-        int y;
-        // Console.WriteLine($"left: {leftStart.WeightDifference} right: {rightStart.WeightDifference}");
-        if (leftStart.WeightDifference < rightStart.WeightDifference)
-        {
-            x = leftStart.Coords.x;
-            y = leftStart.Coords.y;
-        }
-        else
-        {
-            x = rightStart.Coords.x;
-            y = rightStart.Coords.y;
-        }
-        _cargo[x, y].Add(c);
+        var optimalPlace = FindOptimalPlace(c);
+        _cargo[optimalPlace.X, optimalPlace.Y].Add(c);
     }
-
-    private ((int x, int y) Coords, float WeightDifference) TryPlace(Container c,bool reverse = false)
+    
+    private PlaceResult FindOptimalPlace(Container container)
     {
-        var initVal = reverse ? Width - 1 : 0;
-        var endVal = reverse ? -1 : Width;
-        var step = reverse ? -1 : +1;
-
-        for (var x = initVal; x != endVal; x += step)
+        var availablePlaces = new List<PlaceResult>();
+        for (var x = 0; x < Width; x++)
         {
+            var foundPlace = false;
             for (var y = 0; y < Length; y++)
             {
-                if (CanPlace(c, x, y))
+                if (foundPlace) continue;
+                if (CanPlace(container, x, y))
                 {
+                    foundPlace = true;
                     var cargoCopy = CreateCopy();
-                    cargoCopy[x, y].Add(c);
-                    return ((x, y), CalculateWeightDifference(cargoCopy));
+                    cargoCopy[x, y].Add(container);
+                    availablePlaces.Add(new PlaceResult(x, y, CalculateWeightDifference(cargoCopy)));
                 }
             }
         }
-        throw new Exception("Could not place container");
+
+        if (!availablePlaces.Any())
+        {
+            Console.WriteLine(container.Type);
+            throw new Exception("Could not place container");
+        }
+        return availablePlaces.OrderBy(r => r.WeightDifference).First();
+
     }
 
     private bool CanPlace(Container c, int x, int y)
     {
-        var hasValuableContainer = _cargo[x, y].Containers.Any(c => 
-            c.Type is ContainerType.CoolableValuable or ContainerType.Valuable);
-        var isLightEnough = _cargo[x, y].Weight < 150;
+        var hasValuableContainer = _cargo[x, y].HasValuableContainer();
+        var isLightEnough = _cargo[x, y].IsLightEnoughFor(c);
         switch (c.Type)
         {
             case ContainerType.Normal:
@@ -81,17 +77,6 @@ public class Ship
         }
         
         throw new Exception("Not a valid container");
-    }
-
-    private void ReverseStacks()
-    {
-        for (int i = 0; i < Width; i++)
-        {
-            for (int j = 0; j < Length; j++)
-            {
-                _cargo[i, j].Reverse();
-            }
-        }
     }
 
     private void FillArray()
@@ -115,17 +100,12 @@ public class Ship
 
         float weightLeft = 0;
         float weightRight = 0;
-        float weightMiddle = 0;
 
         for (var i = 0; i < cargo.GetLength(0); i++)
         {
             for (var j = 0; j < cargo.GetLength(1); j++)
             {
-                if (i == middleRow - 1)
-                {
-                    weightMiddle += cargo[i, j].Weight;
-                }
-                else if (i < middleRow - 1)
+                if (i < Width / 2)
                 {
                     weightLeft += cargo[i, j].Weight;
                 }
@@ -135,8 +115,6 @@ public class Ship
                 }
             }
         }
-        weightLeft += weightMiddle / 2;
-        weightRight += weightMiddle / 2;
         var loadedWeight = weightLeft + weightRight;
         var left = weightLeft / loadedWeight * 100;
         var right = weightRight / loadedWeight * 100;

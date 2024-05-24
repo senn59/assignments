@@ -13,11 +13,21 @@ public class Stack
         // {
         //     throw new Exception("Cant place container");
         // }
-        _containers.Add(container);
+        if (container.Type is ContainerType.Valuable or ContainerType.CoolableValuable || !HasValuableContainer())
+        {
+            _containers.Add(container);
+            return;
+        }
+        _containers.Insert(_containers.Count - 1, container);
     }
-    
-    public void Reverse()
+
+    public bool HasValuableContainer()
     {
-        _containers.Reverse();
+        return _containers.Any(c => c.Type is ContainerType.CoolableValuable or ContainerType.Valuable);   
+    }
+
+    public bool IsLightEnoughFor(Container container)
+    {
+        return  _containers.Skip(1).Sum(c => (int)c.Load) + (int)container.Load < 120;
     }
 }
